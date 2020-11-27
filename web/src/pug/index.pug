@@ -1,9 +1,25 @@
 extends /base.pug
 block head
 block body
-  .d-flex.h-100.h-100
-    .w-100.h-100.p-4: .border.w-100.h-100.rounded-lg.shadow.overflow-hidden(ld="editor")
-    .w-100.h-100.p-4: .border.w-100.h-100.rounded-lg.shadow.overflow-hidden(ld="viewer")
+  .d-flex.flex-column.h-100.h-100.p-2
+    .d-flex.w-100.h-50
+
+      .w-100.h-100.p-2
+        .card.w-100.h-100.shadow
+          .card-header.py-2.text-sm Code ( Pug )
+          .card-body.p-0(ld="editor")
+      .w-100.h-100.p-2
+        .card.w-100.h-100.shadow
+          .card-header.py-2.text-sm Datadom ( Pug → JSON )
+          .card-body.p-0(ld="json")
+      .w-100.h-100.p-2
+        .card.w-100.h-100.shadow
+          .card-header.py-2.text-sm Preview ( Pug → JSON → DOM )
+          .card-body.p-0(ld="viewer")
+    .w-100.h-50: .w-100.h-100.p-2
+      .card.w-100.h-100.shadow
+        .card-header.py-2.text-sm Remote Preview ( Pug → JSON → ShareDB → JSON → DOM )
+        .card-body.p-2
 block script
   +script("js/editor/base.js")
   +script("js/editor/transpiler.js")

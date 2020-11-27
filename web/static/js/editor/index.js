@@ -1,7 +1,7 @@
 (function(){
   return getfa('sample').then(function(fs){
     var ed;
-    fs.writeFileSync('blank', 'hello index.html!');
+    fs.writeFileSync('blank', "//- pug\ndoctype html\nhtml\n  head\n  body\n    h1 hello world!");
     ed = new Editor({
       node: {
         edit: '[ld=editor]',

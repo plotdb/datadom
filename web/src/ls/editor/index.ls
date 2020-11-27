@@ -1,7 +1,17 @@
 (->
   getfa 'sample'
     .then (fs) ->
-      fs.write-file-sync 'blank', 'hello index.html!'
+      fs.write-file-sync(
+        \blank,
+        """
+        //- pug
+        doctype html
+        html
+          head
+          body
+            h1 hello world!
+        """
+      )
       ed = new Editor do
         node: do
           edit: '[ld=editor]'
