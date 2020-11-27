@@ -23,8 +23,6 @@
     "coverage": "npx nyc --reporter=text npm run test"
   },
   "devDependencies": {
-    "mocha": "^8.2.1",
-    "nyc": "^15.1.0",
     "@loadingio/debounce.js": "0.0.1",
     "@loadingio/ldquery": "^1.1.1",
     "@plotdb/datahub": "0.0.6",
@@ -39,6 +37,8 @@
     "ldiconfont": "github:loadingio/ldiconfont",
     "ldview": "0.0.2",
     "livescript": ">=1.6.0",
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
     "template": "github:zbryikt/template#v2.1.6",
     "uglify-js": "=3.2.0"
   },
