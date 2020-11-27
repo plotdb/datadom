@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+echo "prepare..."
+rm -rf dist
+mkdir -p dist
+
+echo "building datadom.ls -> datadom.js ..."
+npx lsc -cp src/datadom.ls > dist/datadom.js
+echo "minify datadom.js -> datadom.min.js ..."
+npx uglifyjs dist/datadom.js > dist/datadom.min.js
+
+echo "copy dist to web ..."
+rm -rf web/static/assets/lib/datadom/dev/
+mkdir -p web/static/assets/lib/datadom/dev/
+cp -R dist/* web/static/assets/lib/datadom/dev/

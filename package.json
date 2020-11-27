@@ -1,0 +1,71 @@
+{
+  "author": "zbryikt",
+  "name": "@plotdb/datadom",
+  "license": "MIT",
+  "description": "dom serializer / deserializer",
+  "version": "0.0.1",
+  "files": [
+    "dist/**/*"
+  ],
+  "homepage": "https://github.com/plotdb/datadom",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/plotdb/datadom"
+  },
+  "engines": {
+    "node": ">=10.14.1",
+    "npm": ">=6.4.1"
+  },
+  "scripts": {
+    "doc": "npx jsdoc -d web/static/doc dist/datadom.js",
+    "start": "npx server -r web",
+    "test": "npx mocha --require livescript ./test/index.ls",
+    "coverage": "npx nyc --reporter=text npm run test"
+  },
+  "devDependencies": {
+    "mocha": "^8.2.1",
+    "nyc": "^15.1.0",
+    "@loadingio/debounce.js": "0.0.1",
+    "@loadingio/ldquery": "^1.1.1",
+    "@plotdb/datahub": "0.0.6",
+    "@plotdb/json0": "0.0.1",
+    "bootstrap": "^4.5.2",
+    "bootstrap.ldui": "github:loadingio/bootstrap.ldui",
+    "bootstrap.native": "^3.0.13",
+    "fedep": "0.0.7",
+    "jsdoc": "^3.6.6",
+    "jsoneditor": "^9.1.1",
+    "ldcover": "^1.1.0",
+    "ldiconfont": "github:loadingio/ldiconfont",
+    "ldview": "0.0.2",
+    "livescript": ">=1.6.0",
+    "template": "github:zbryikt/template#v2.1.6",
+    "uglify-js": "=3.2.0"
+  },
+  "nyc": {
+    "all": true,
+    "extension": ".ls",
+    "require": [
+      "livescript"
+    ],
+    "include": [
+      "src/**/*"
+    ]
+  },
+  "frontendDependencies": {
+    "root": "web/static/assets/lib",
+    "modules": [
+      "bootstrap",
+      "bootstrap.ldui",
+      "bootstrap.native",
+      "@loadingio/ldquery",
+      "@loadingio/debounce.js",
+      "ldview",
+      "ldcover",
+      "jsoneditor",
+      "ldiconfont",
+      "@plotdb/datahub",
+      "@plotdb/json0"
+    ]
+  }
+}
