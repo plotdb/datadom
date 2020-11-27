@@ -1,6 +1,12 @@
 extends /base.pug
 block head
 block body
-  h1 hi
+  .d-flex.h-100.h-100
+    .w-100.h-100.p-4: .border.w-100.h-100.rounded-lg.shadow.overflow-hidden(ld="editor")
+    .w-100.h-100.p-4: .border.w-100.h-100.rounded-lg.shadow.overflow-hidden(ld="viewer")
 block script
-  +script("js/index.js")
+  +script("js/editor/base.js")
+  +script("js/editor/transpiler.js")
+  +script("js/editor/editlet.js")
+  +script("js/editor/editor.js")
+  +script("js/editor/index.js")

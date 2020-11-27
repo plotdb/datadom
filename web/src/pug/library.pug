@@ -1,0 +1,34 @@
+//- module
+
++css("assets/lib/codemirror/main/lib/codemirror.css")
++css("assets/lib/codemirror/main/theme/ayu-mirage.css")
++css("assets/lib/codemirror/main/theme/mdn-like.css")
+
+//- required
++script("assets/lib/codemirror/main/lib/codemirror.js")
+
+//- syntax highlight
++script("assets/lib/codemirror/main/mode/javascript/javascript.js")
++script("assets/lib/codemirror/main/mode/css/css.js")
++script("assets/lib/codemirror/main/mode/xml/xml.js")
++script("assets/lib/codemirror/main/mode/htmlmixed/htmlmixed.js")
++script("assets/lib/codemirror/main/mode/livescript/livescript.js")
++script("assets/lib/codemirror/main/mode/stylus/stylus.js")
++script("assets/lib/codemirror/main/mode/pug/pug.js")
++script("assets/lib/codemirror/main/mode/markdown/markdown.js")
+
+//- search + vim mode
++script("assets/lib/codemirror/main/addon/dialog/dialog.js")
++script("assets/lib/codemirror/main/addon/search/searchcursor.js")
++script("assets/lib/codemirror/main/keymap/vim.js")
+
++script("https://cdnjs.cloudflare.com/ajax/libs/BrowserFS/2.0.0/browserfs.min.js")
+//- init before loading pug to make it work.
+script: :lsc
+  BrowserFS.install window
+  BrowserFS.configure {fs: \LocalStorage}, -> window.fs = fs = require("fs")
+
++script("assets/lib/@plotdb/pug-browser/main/pug.min.js")
+
+//- renderer
++script("/assets/lib/@plotdb/sandbox.js/main/sandbox.min.js")
