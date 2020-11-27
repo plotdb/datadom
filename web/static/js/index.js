@@ -1,3 +1,3 @@
 var ret;
-ret = dom.serialize(document.body);
+ret = datadom.serialize(document.body);
 console.log(ret);

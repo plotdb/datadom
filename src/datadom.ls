@@ -1,4 +1,23 @@
 
+sample-plugin = ->
+  node = document.createElement \div
+  node.textContent = "loading..."
+  promise = Promise.resolve!
+    .then -> block-manager.get(n{name,version})
+    .then (b) ->
+      b.instantiate!
+        .then (ret) ->
+          if node.parentNode =>
+            that
+              ..insertBefore ret.node, node
+              ..removeChild node
+          else return ret
+    .catch ->
+      console.log "block-manager.get failed in deserialize ( #{n.name}@#{n.version} )"
+      node.innerText = "load fail." # TODO update error info in node?
+  return {node, promise}
+
+
 /**
  * convert a DOM Node into JSON.
  * @param {Element} n - DOM node.
@@ -20,12 +39,12 @@ wrap = (n) ->
  * @param {Element} n - DOM tree root node.
  * @return {json} a serialized JSON representing the input DOM.
  */
-serialize = (n) ->
+serialize = (n, plugin) ->
   node = wrap n
   child = []
   if !n.childNodes => return
   for i from 0 til n.childNodes.length =>
-    ret = serialize n.childNodes[i]
+    ret = serialize(n.childNodes[i], plugin)
     child.push ret
   node.child = child
   node
@@ -33,48 +52,43 @@ serialize = (n) ->
 
 /**
  * deserialize a JSON into corresponding DOM tree.
- * @param {json} - JSON representation of a serialized DOM tree.
+ * @param {json} n - JSON representation of a serialized DOM tree.
+ * @param {Function} plugin - optional plugin function to handle custom type DOM Node.
  * @return {Promise} - a promise resolving to an object containing following fields:
  *   - node {Element}: deserialized DOM tree or placeholder div for being replaced by instantiated block.
  *   - promise {Promise}: resolve to all pending block retrieval.
  */
-deserialize = (n) ->
+deserialize = (n, plugin) ->
   queue = []
   Promise.resolve!
     .then ->
       _ = (n) ->
-        if n.type == \text => return document.createTextNode n.value
-        else if n.type == \block =>
-          return (->
+        switch n.type
+        | \text => return document.createTextNode n.value
+        | \tag =>
+          node = document.createElement n.name
+          n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
+          n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
+          if n.cls and n.cls.length =>
+            node.classList.add.apply node.classList, n.cls.filter(->it)
+          for c in (n.child or []) =>
+            ret = _ c
+            if ret => node.appendChild ret
+          return node
+        | otherwise
+          if !plugin =>
             node = document.createElement \div
-            node.textContent = "loading..."
-            queue.push(
-              debounce 2000
-                .then ->
-                  block-manager.get(n{name,version})
-                .then (b) ->
-                  b.instantiate!
-                    .then (ret) ->
-                      if node.parentNode =>
-                        that
-                          ..insertBefore ret.node, node
-                          ..removeChild node
-                      else return ret
-                .catch ->
-                  console.log "block-manager.get failed in deserialize ( #{n.name}@#{n.version} )"
-                  node.innerText = "load fail." # TODO update error info in node?
-            )
+            node.textContent = "(unknown)"
             return node
-          )!
-        node = document.createElement n.name
-        n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
-        n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
-        if n.cls and n.cls.length =>
-          node.classList.add.apply node.classList, n.cls.filter(->it)
-        for c in (n.child or []) =>
-          ret = _ c
-          if ret => node.appendChild ret
-        return node
+          else ret = plugin n, plugin
+          if ret instanceof Promise =>
+            [node, promise] = [document.createElement(\div), ret]
+            node.textContent = "loading..."
+          else if ret instanceof Element =>
+            [node, promise] = [ret, null]
+          else {node,promise} = ret
+          if promise => queue.push promise
+          return node
       _(n)
     .then (node) ->
       return {node, promise: Promise.all(queue)}
@@ -120,20 +134,26 @@ locate = (op, data, root) ->
 
 main = (opt = {}) ->
   @opt = opt
-  if opt.data =>
-    @data = opt.data
-    @node = @deserialize!
-  else if opt.node =>
-    @node = opt.node
-    @data = @serialize!
+  @plugins = if Array.isArray(opt.plugin) => that else if opt.plugin => [opt.plugin] else []
+  if opt.data => @data = opt.data
+  else if opt.node => @node = opt.node
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
-  serialize: -> @data = serialize @node
-  deserialize: ->
-    deserialize @data .then (ret) ~>
-      @node = ret.node
-      return ret.promise
+  plugin: (o,p) -> @plugins.map -> it(o,p)
+  init: ->
+    if @node => @data = serialize(@node, (o,p) ~> @plugin o,p)
+    else
+      deserialize(@data, (o,p) ~> @plugin o,p)
+        .then ({node, promise}) ~> @node = node; return promise
+        # TODO this seems strange. we should verify if this is accurate.
+        .then ({node, promise}) ~> @node = ret.node
+  get-data: -> @data
+  get-node: -> @node
+  update: (ops = []) ->
+    for op in ops =>
+      json0.type.apply @data, op
+      locate op, @data, @root
 
 main <<< { serialize, deserialize }
 
