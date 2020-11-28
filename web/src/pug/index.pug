@@ -10,16 +10,21 @@ block body
           .card-body.p-0(ld="editor")
       .w-100.h-100.p-2
         .card.w-100.h-100.shadow
-          .card-header.py-2.text-sm Datadom ( Pug → JSON )
-          .card-body.p-0(ld="json")
+          .card-header.py-2.text-sm Preview ( Pug → DOM )
+          .card-body.p-0(ld="viewer")
+    .d-flex.w-100.h-50
       .w-100.h-100.p-2
         .card.w-100.h-100.shadow
-          .card-header.py-2.text-sm Preview ( Pug → JSON → DOM )
-          .card-body.p-0(ld="viewer")
-    .w-100.h-50: .w-100.h-100.p-2
-      .card.w-100.h-100.shadow
-        .card-header.py-2.text-sm Remote Preview ( Pug → JSON → ShareDB → JSON → DOM )
-        .card-body.p-2
+          .card-header.py-2.text-sm Datadom ( Pug → DOM → JSON )
+          .card-body.p-2(style="font-family:monospace;font-size:.85em;overflow-y:scroll;white-space:pre;",ld="json")
+      .w-100.h-100.p-2
+        .card.w-100.h-100.shadow
+          .card-header.py-2.text-sm Preview ( Pug → DOM → JSON → DOM )
+          .card-body.p-0(ld="dom")
+      .w-100.h-100.p-2
+        .card.w-100.h-100.shadow
+          .card-header.py-2.text-sm Remote ( Pug → DOM → JSON → ShareDB → JSON → DOM )
+          .card-body.p-2(ld="remote")
 block script
   +script("js/editor/base.js")
   +script("js/editor/transpiler.js")
