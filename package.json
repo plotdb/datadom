@@ -18,7 +18,11 @@
   },
   "scripts": {
     "doc": "npx jsdoc -d web/static/doc dist/datadom.js",
-    "start": "npx server -r web",
+    "dev": "npx lsc server",
+    "docker-build": "docker-compose -f server/docker/compose.yaml --build",
+    "db": "docker-compose -f server/docker/compose.yaml up -d db",
+    "start": "docker-compose -f server/docker/compose.yaml up",
+    "docker-stop": "docker-compose -f server/docker/compose.yaml down",
     "test": "npx mocha --require livescript ./test/index.ls",
     "coverage": "npx nyc --reporter=text npm run test"
   },
@@ -42,6 +46,7 @@
     "livescript": ">=1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
+    "sharedb-wrapper": "github:zbryikt/sharedb-wrapper",
     "template": "github:zbryikt/template#v2.1.6",
     "uglify-js": "=3.2.0"
   },
