@@ -8,9 +8,14 @@
     remote = ld$.find('[ld=remote]', 0);
     remote.innerHTML = "";
     return datadom.deserialize(lc.data).then(function(arg$){
-      var node, promise;
+      var node, promise, pug, pugNode;
       node = arg$.node, promise = arg$.promise;
       remote.appendChild(node);
+      pug = "//- pug\n" + html2pug(remote.innerHTML, {
+        fragment: true
+      });
+      pugNode = ld$.find('[ld=pug]', 0);
+      pugNode.innerText = pug;
       return console.log(ops, source);
     });
   };
@@ -25,7 +30,7 @@
     lc.data = JSON.parse(JSON.stringify(doc.data));
     return getfa('sample').then(function(fs){
       var renderDatadom, ed;
-      fs.writeFileSync('blank', "//- pug\ndoctype html\nhtml\n  head\n  body\n    h1 hello world!");
+      fs.writeFileSync('blank', "//- pug\nh1 hello world!");
       renderDatadom = function(code){
         var div, json, node, domroot, ops;
         div = document.createElement("div");
@@ -44,7 +49,7 @@
         ops = json0.diff(doc.data, json);
         return doc.submitOp(ops);
       };
-      ed = new Editor({
+      lc.ed = ed = new Editor({
         node: {
           edit: '[ld=editor]',
           view: '[ld=viewer]'

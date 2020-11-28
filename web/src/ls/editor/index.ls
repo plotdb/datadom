@@ -8,6 +8,9 @@
     datadom.deserialize lc.data
       .then ({node, promise}) ->
         remote.appendChild node
+        pug = "//- pug\n" + html2pug(remote.innerHTML, {fragment: true})
+        pug-node = ld$.find '[ld=pug]', 0
+        pug-node.innerText = pug
         console.log ops, source
 
   sdb.get {id: \sample, watch: watch, create: -> {} }
@@ -21,11 +24,7 @@
             \blank,
             """
             //- pug
-            doctype html
-            html
-              head
-              body
-                h1 hello world!
+            h1 hello world!
             """
           )
           render-datadom = (code) ->
@@ -45,7 +44,7 @@
             doc.submitOp ops
 
 
-          ed = new Editor do
+          lc.ed = ed = new Editor do
             node: do
               edit: '[ld=editor]'
               view: '[ld=viewer]'
