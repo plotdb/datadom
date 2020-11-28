@@ -73,6 +73,7 @@
       "jsoneditor",
       "ldiconfont",
       "codemirror",
+      "sharedb-wrapper",
       "@plotdb/datahub",
       "@plotdb/sandbox.js",
       "@plotdb/pug-browser",
