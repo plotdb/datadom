@@ -81,6 +81,7 @@ deserialize = (n, plugin) ->
             node.textContent = "(unknown)"
             return node
           else ret = plugin n, plugin
+          # TODO review this. where should this node go when promise is resolved?
           if ret instanceof Promise =>
             [node, promise] = [document.createElement(\div), ret]
             node.textContent = "loading..."
