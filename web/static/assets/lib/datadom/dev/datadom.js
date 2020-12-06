@@ -261,9 +261,13 @@
   };
   main.prototype = import$(Object.create(Object.prototype), {
     plugin: function(o, p){
-      return this.plugins.map(function(it){
-        return it(o, p);
-      });
+      if (this.plugins.length) {
+        return this.plugins.map(function(it){
+          return it(o, p);
+        });
+      } else {
+        return o;
+      }
     },
     init: function(){
       var this$ = this;
@@ -279,10 +283,6 @@
           node = arg$.node, promise = arg$.promise;
           this$.node = node;
           return promise;
-        }).then(function(arg$){
-          var node, promise;
-          node = arg$.node, promise = arg$.promise;
-          return this$.node = ret.node;
         });
       }
     },

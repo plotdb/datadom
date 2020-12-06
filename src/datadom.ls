@@ -141,14 +141,14 @@ main = (opt = {}) ->
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
-  plugin: (o,p) -> @plugins.map -> it(o,p)
+  plugin: (o,p) -> if @plugins.length => @plugins.map(-> it o,p) else o
   init: ->
     if @node => @data = serialize(@node, (o,p) ~> @plugin o,p)
     else
       deserialize(@data, (o,p) ~> @plugin o,p)
+        # node might be a proxy which will be updated once promise is resolved.
+        # return promise which is resolved when all pending plugins are processed.
         .then ({node, promise}) ~> @node = node; return promise
-        # TODO this seems strange. we should verify if this is accurate.
-        .then ({node, promise}) ~> @node = ret.node
   get-data: -> @data
   get-node: -> @node
   update: (ops = []) ->
