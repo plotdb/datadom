@@ -297,8 +297,8 @@
       ops == null && (ops = []);
       for (i$ = 0, len$ = ops.length; i$ < len$; ++i$) {
         op = ops[i$];
-        json0.type.apply(this.data, op);
-        results$.push(locate(op, this.data, this.root));
+        json0.type.apply(this.data, [op]);
+        results$.push(locate(op, this.data, this.node));
       }
       return results$;
     }

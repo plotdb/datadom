@@ -153,8 +153,8 @@ main.prototype = Object.create(Object.prototype) <<< do
   get-node: -> @node
   update: (ops = []) ->
     for op in ops =>
-      json0.type.apply @data, op
-      locate op, @data, @root
+      json0.type.apply @data, [op]
+      locate op, @data, @node
 
 main <<< { serialize, deserialize }
 
