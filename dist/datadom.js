@@ -272,8 +272,10 @@
     init: function(){
       var this$ = this;
       if (this.node) {
-        return this.data = serialize(this.node, function(o, p){
-          return this$.plugin(o, p);
+        return Promise.resolve().then(function(){
+          return this$.data = serialize(this$.node, function(o, p){
+            return this$.plugin(o, p);
+          });
         });
       } else {
         return deserialize(this.data, function(o, p){

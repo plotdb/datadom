@@ -143,7 +143,7 @@ main = (opt = {}) ->
 main.prototype = Object.create(Object.prototype) <<< do
   plugin: (o,p) -> if @plugins.length => @plugins.map(-> it o,p) else o
   init: ->
-    if @node => @data = serialize(@node, (o,p) ~> @plugin o,p)
+    if @node => Promise.resolve!then ~> @data = serialize(@node, (o,p) ~> @plugin o,p)
     else
       deserialize(@data, (o,p) ~> @plugin o,p)
         # node might be a proxy which will be updated once promise is resolved.

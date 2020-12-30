@@ -1,3 +1,8 @@
+# 0.0.4
+
+ - return Promise in init if datadom is inited with node to unify init return value in different cases.
+
+
 # 0.0.3
 
  - fix bug: update with ops should wrap ops in Array when applying.
