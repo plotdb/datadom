@@ -26,6 +26,7 @@ serialize/deserialize a DOM tree:
 datadom is also a constructor:
 
     dd = new datadom({ ... })
+    dd.init();
 
 
 # API
@@ -39,6 +40,7 @@ constructor options:
 
 datadom object methods:
 
+ - init(): initialize data and node ( from provided counterpart ).
  - update(ops): apply ops ( operation transformations ) to internal data and DOM tree.
  - getData(): return datadom json.
  - getNode(): return root of the corresponding DOM tree.
