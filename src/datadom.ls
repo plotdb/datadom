@@ -25,8 +25,10 @@ sample-plugin = ->
  */
 wrap = (n) ->
   name = n.nodeName.toLowerCase!
-  if name == \#text =>
-    return {type: \text, value: n.nodeValue}
+  if name == \#text => return {type: \text, value: n.nodeValue}
+  if name == \#comment => return {type: \comment, value: n.nodeValue}
+  if name == \#document-fragment => return {type: \document-fragment}
+
   style = if n.style => [i for i from 0 til n.style.length].map(-> [n.style[it],n.style[n.style[it]]]) else []
   attr = if n.attributes =>
     [[v.nodeName, v.nodeValue] for v in n.attributes].filter(->!(it.0 in <[style class]>))
@@ -35,7 +37,7 @@ wrap = (n) ->
   return {type: \tag, name: name, style, attr, cls}
 
 /**
- * serialize a DOM tree. 
+ * serialize a DOM tree.
  * @param {Element} n - DOM tree root node.
  * @return {json} a serialized JSON representing the input DOM.
  */

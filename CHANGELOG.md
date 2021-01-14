@@ -1,3 +1,8 @@
+# 0.0.5 (upcoming)
+
+ - adding support to serialize `comment` and `document-fragment`.
+
+
 # 0.0.4
 
  - return Promise in init if datadom is inited with node to unify init return value in different cases.

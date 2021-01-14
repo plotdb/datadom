@@ -45,6 +45,17 @@
         value: n.nodeValue
       };
     }
+    if (name === '#comment') {
+      return {
+        type: 'comment',
+        value: n.nodeValue
+      };
+    }
+    if (name === '#document-fragment') {
+      return {
+        type: 'document-fragment'
+      };
+    }
     style = n.style
       ? (function(){
         var i$, to$, results$ = [];
@@ -89,7 +100,7 @@
     };
   };
   /**
-   * serialize a DOM tree. 
+   * serialize a DOM tree.
    * @param {Element} n - DOM tree root node.
    * @return {json} a serialized JSON representing the input DOM.
    */
