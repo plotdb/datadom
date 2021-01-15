@@ -137,6 +137,18 @@
         switch (n.type) {
         case 'text':
           return document.createTextNode(n.value);
+        case 'comment':
+          return document.createComment(n.value);
+        case 'document-fragment':
+          node = document.createDocumentFragment();
+          for (i$ = 0, len$ = (ref$ = n.child || []).length; i$ < len$; ++i$) {
+            c = ref$[i$];
+            ret = _(c);
+            if (ret) {
+              node.appendChild(ret);
+            }
+          }
+          return node;
         case 'tag':
           node = document.createElement(n.name);
           n.attr.filter(function(it){

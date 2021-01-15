@@ -67,6 +67,13 @@ deserialize = (n, plugin) ->
       _ = (n) ->
         switch n.type
         | \text => return document.createTextNode n.value
+        | \comment => return document.createComment n.value
+        | \document-fragment =>
+          node = document.createDocumentFragment!
+          for c in (n.child or []) =>
+            ret = _ c
+            if ret => node.appendChild ret
+          return node
         | \tag =>
           node = document.createElement n.name
           n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
