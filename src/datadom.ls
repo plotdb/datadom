@@ -1,3 +1,4 @@
+if module? and require? => require! <[@plotdb/json0]>
 sample-plugin = ({data, window}) ->
   node = document.createElement \div
   node.textContent = "loading..."

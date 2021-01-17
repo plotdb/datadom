@@ -26,11 +26,14 @@
     "test": "npx mocha --require livescript ./test/index.ls",
     "coverage": "npx nyc --reporter=text npm run test"
   },
+  "peerDependencies": {
+    "@plotdb/json0": "0.0.2"
+  },
   "devDependencies": {
     "@loadingio/debounce.js": "0.0.1",
     "@loadingio/ldquery": "^1.1.1",
     "@plotdb/datahub": "0.0.6",
-    "@plotdb/json0": "0.0.1",
+    "@plotdb/json0": "0.0.2",
     "@plotdb/pug-browser": "0.0.2",
     "@plotdb/sandbox.js": "0.0.1",
     "bootstrap": "^4.5.2",
