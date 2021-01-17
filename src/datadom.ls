@@ -1,5 +1,5 @@
 
-sample-plugin = ->
+sample-plugin = (n, plugin) ->
   node = document.createElement \div
   node.textContent = "loading..."
   promise = Promise.resolve!
