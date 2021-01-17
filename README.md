@@ -60,7 +60,7 @@ datadom class methods:
 
 to run in nodeJS, use `jsdom` and pass `window` as an argument:
 
-    datadom.deserialize(data, plugin, (new JSDOM()).window);
+    datadom.deserialize({data, window: (new JSDOM()).window});
 
 similarly, pass `window` in constructor when using `new datadom( ... )`:
 
