@@ -78,6 +78,7 @@
       "@plotdb/datahub",
       "@plotdb/sandbox.js",
       "@plotdb/pug-browser",
+      "@plotdb/block",
       "@plotdb/json0"
     ]
   }
