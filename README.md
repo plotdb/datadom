@@ -26,33 +26,45 @@ serialize/deserialize a DOM tree:
 datadom is also a constructor:
 
     dd = new datadom({ ... })
-    dd.init();
+    dd.init().then(function() { ... });
 
 
 # API
 
 constructor options:
 
- - plugin: function, of Array of functions as default plugin(s).
+ - `plugin`: function, of Array of functions as default plugin(s).
    - plugin function accepts 1 parameters: subtree root ( for serialize ) / subdoc root ( for deserialize )
- - data: datadom json
- - node: root of DOM tree. ignored if `data` is provided.
+ - `data`: datadom json
+ - `node`: root of DOM tree. ignored if `data` is provided.
+ - `document`: optional `document` object if run in NodeJS.
 
 datadom object methods:
 
- - init(): initialize data and node ( from provided counterpart ).
- - update(ops): apply ops ( operation transformations ) to internal data and DOM tree.
- - getData(): return datadom json.
- - getNode(): return root of the corresponding DOM tree.
+ - `init()`: initialize data and node ( from provided counterpart ). Return promise.
+ - `update(ops)`: apply ops ( operation transformations ) to internal data and DOM tree.
+ - `getData()`: return datadom json.
+ - `getNode()`: return root of the corresponding DOM tree.
 
 datadom class methods:
 
- - serialize(node, plugin) - convert DOM tree (with root `node`) into json.
-   - node: root node of DOM tree to serialize
-   - plugin(d): optional handler for custom node types.
- - deserialize(data, plugin) - convert datadom json into DOM tree
-   - data: a datadom json.
-   - plugin(d): optional handler for custom node types.
+ - `serialize(node, plugin)`: convert DOM tree (with root `node`) into json.
+   - `node`: root node of DOM tree to serialize
+   - `plugin(d)`: optional handler for custom node types.
+ - `deserialize(data, plugin)`: convert datadom json into DOM tree
+   - `data`: a datadom json.
+   - `plugin(d)`: optional handler for custom node types.
+
+
+## Node.js
+
+to run in nodeJS, use `jsdom` and pass `document` as an argument:
+
+    datadom.deserialize(data, plugin, (new JSDOM()).window.document);
+
+similarly, pass `document` in constructor when using `new datadom( ... )`:
+
+    new datadom({ ..., document: (new JSDOM()).windiw.document)});
 
 
 # License

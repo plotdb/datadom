@@ -127,8 +127,9 @@
    *   - node {Element}: deserialized DOM tree or placeholder div for being replaced by instantiated block.
    *   - promise {Promise}: resolve to all pending block retrieval.
    */
-  deserialize = function(n, plugin){
+  deserialize = function(n, plugin, doc){
     var queue;
+    doc == null && (doc = document);
     queue = [];
     return Promise.resolve().then(function(){
       var _;
@@ -136,11 +137,11 @@
         var node, i$, ref$, len$, c, ret, promise;
         switch (n.type) {
         case 'text':
-          return document.createTextNode(n.value);
+          return doc.createTextNode(n.value);
         case 'comment':
-          return document.createComment(n.value);
+          return doc.createComment(n.value);
         case 'document-fragment':
-          node = document.createDocumentFragment();
+          node = doc.createDocumentFragment();
           for (i$ = 0, len$ = (ref$ = n.child || []).length; i$ < len$; ++i$) {
             c = ref$[i$];
             ret = _(c);
@@ -150,7 +151,7 @@
           }
           return node;
         case 'tag':
-          node = document.createElement(n.name);
+          node = doc.createElement(n.name);
           n.attr.filter(function(it){
             return it && it[0];
           }).map(function(p){
@@ -176,14 +177,14 @@
           return node;
         default:
           if (!plugin) {
-            node = document.createElement('div');
+            node = doc.createElement('div');
             node.textContent = "(unknown)";
             return node;
           } else {
             ret = plugin(n, plugin);
           }
           if (ret instanceof Promise) {
-            ref$ = [document.createElement('div'), ret], node = ref$[0], promise = ref$[1];
+            ref$ = [doc.createElement('div'), ret], node = ref$[0], promise = ref$[1];
             node.textContent = "loading...";
           } else if (ret instanceof Element) {
             ref$ = [ret, null], node = ref$[0], promise = ref$[1];
@@ -270,6 +271,11 @@
     var that;
     opt == null && (opt = {});
     this.opt = opt;
+    this.document = (that = opt.document)
+      ? that
+      : typeof window != 'undefined' && window !== null
+        ? window.document
+        : typeof document != 'undefined' && document !== null ? document : null;
     this.plugins = (that = Array.isArray(opt.plugin))
       ? that
       : opt.plugin
@@ -303,7 +309,7 @@
       } else {
         return deserialize(this.data, function(o, p){
           return this$.plugin(o, p);
-        }).then(function(arg$){
+        }, this.document).then(function(arg$){
           var node, promise;
           node = arg$.node, promise = arg$.promise;
           this$.node = node;
