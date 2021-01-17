@@ -1,9 +1,8 @@
-
-sample-plugin = (n, plugin) ->
+sample-plugin = ({data, window}) ->
   node = document.createElement \div
   node.textContent = "loading..."
   promise = Promise.resolve!
-    .then -> block-manager.get(n{name,version})
+    .then -> block-manager.get(data{name,version})
     .then (b) ->
       b.instantiate!
         .then (ret) ->
@@ -60,7 +59,8 @@ serialize = (n, plugin) ->
  *   - node {Element}: deserialized DOM tree or placeholder div for being replaced by instantiated block.
  *   - promise {Promise}: resolve to all pending block retrieval.
  */
-deserialize = (n, plugin, doc = document) ->
+deserialize = (n, plugin, win = window) ->
+  doc = win.document
   queue = []
   Promise.resolve!
     .then ->
@@ -89,14 +89,17 @@ deserialize = (n, plugin, doc = document) ->
             node = doc.createElement \div
             node.textContent = "(unknown)"
             return node
-          else ret = plugin n, plugin
-          # TODO review this. where should this node go when promise is resolved?
+          else ret = plugin {data: n, window: win}
           if ret instanceof Promise =>
             [node, promise] = [doc.createElement(\div), ret]
             node.textContent = "loading..."
-          else if ret instanceof Element =>
+            promise = promise.then(->
+              if node.parentNode => node.replaceWith it
+              return it
+            )
+          else if ret instanceof win.Element =>
             [node, promise] = [ret, null]
-          else {node,promise} = ret
+          else {node,promise} = (ret or {})
           if promise => queue.push promise
           return node
       _(n)
@@ -144,18 +147,23 @@ locate = (op, data, root) ->
 
 main = (opt = {}) ->
   @opt = opt
-  @document = if opt.document => that else if window? => window.document else if document? => document else null
+  @window = if opt.window => that else if window? => window else null
+  # we only support 1 plugin, but maybe we can support multiple plugins in the future?
   @plugins = if Array.isArray(opt.plugin) => that else if opt.plugin => [opt.plugin] else []
   if opt.data => @data = opt.data
   else if opt.node => @node = opt.node
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
-  plugin: (o,p) -> if @plugins.length => @plugins.map(-> it o,p) else o
+  plugin: ({data, window}) ->
+    if !@plugins.length => return null
+    @plugins.0 {data, window}
   init: ->
-    if @node => Promise.resolve!then ~> @data = serialize(@node, (o,p) ~> @plugin o,p)
+    if @node =>
+      Promise.resolve!then ~>
+        @data = serialize(@node, if @plugins.length => ((o) ~> @plugin o) else null)
     else
-      deserialize(@data, ((o,p) ~> @plugin o,p), @document)
+      deserialize(@data, (if @plugins.length => ((o) ~> @plugin o) else null), @window)
         # node might be a proxy which will be updated once promise is resolved.
         # return promise which is resolved when all pending plugins are processed.
         .then ({node, promise}) ~> @node = node; return promise

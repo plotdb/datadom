@@ -37,7 +37,7 @@ constructor options:
    - plugin function accepts 1 parameters: subtree root ( for serialize ) / subdoc root ( for deserialize )
  - `data`: datadom json
  - `node`: root of DOM tree. ignored if `data` is provided.
- - `document`: optional `document` object if run in NodeJS.
+ - `window`: optional `window` object if run in NodeJS.
 
 datadom object methods:
 
@@ -58,13 +58,13 @@ datadom class methods:
 
 ## Node.js
 
-to run in nodeJS, use `jsdom` and pass `document` as an argument:
+to run in nodeJS, use `jsdom` and pass `window` as an argument:
 
-    datadom.deserialize(data, plugin, (new JSDOM()).window.document);
+    datadom.deserialize(data, plugin, (new JSDOM()).window);
 
-similarly, pass `document` in constructor when using `new datadom( ... )`:
+similarly, pass `window` in constructor when using `new datadom( ... )`:
 
-    new datadom({ ..., document: (new JSDOM()).windiw.document)});
+    new datadom({ ..., window: (new JSDOM()).windiw)});
 
 
 # License
