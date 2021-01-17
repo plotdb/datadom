@@ -1,6 +1,7 @@
-# 0.0.5 (upcoming)
+# 0.1.0 (upcoming)
 
- - adding support to serialize `comment` and `document-fragment`.
+ - adding support to `comment` and `document-fragment`.
+ - better support of plugins ( wip )
 
 
 # 0.0.4
