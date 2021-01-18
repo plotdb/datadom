@@ -1,27 +1,32 @@
 {
-  "_from": "codemirror",
+  "_args": [
+    [
+      "codemirror@5.58.3",
+      "/Users/tkirby/workspace/zbryikt/plotdb/projects/datadom"
+    ]
+  ],
+  "_development": true,
+  "_from": "codemirror@5.58.3",
   "_id": "codemirror@5.58.3",
   "_inBundle": false,
   "_integrity": "sha512-KBhB+juiyOOgn0AqtRmWyAT3yoElkuvWTI6hsHa9E6GQrl6bk/fdAYcvuqW1/upO9T9rtEtapWdw4XYcNiVDEA==",
   "_location": "/codemirror",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "codemirror",
+    "raw": "codemirror@5.58.3",
     "name": "codemirror",
     "escapedName": "codemirror",
-    "rawSpec": "",
+    "rawSpec": "5.58.3",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "5.58.3"
   },
   "_requiredBy": [
-    "#DEV:/",
-    "#USER"
+    "#DEV:/"
   ],
   "_resolved": "https://registry.npmjs.org/codemirror/-/codemirror-5.58.3.tgz",
-  "_shasum": "3f0689854ecfbed5d4479a98b96148b2c3b79796",
-  "_spec": "codemirror",
+  "_spec": "5.58.3",
   "_where": "/Users/tkirby/workspace/zbryikt/plotdb/projects/datadom",
   "author": {
     "name": "Marijn Haverbeke",
@@ -31,7 +36,6 @@
   "bugs": {
     "url": "http://github.com/codemirror/CodeMirror/issues"
   },
-  "bundleDependencies": false,
   "contributors": [
     {
       "name": "List of CodeMirror contributors. Updated before every release."
@@ -2739,7 +2743,6 @@
     }
   ],
   "dependencies": {},
-  "deprecated": false,
   "description": "Full-featured in-browser code editor",
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",

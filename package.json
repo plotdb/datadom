@@ -32,9 +32,11 @@
   "devDependencies": {
     "@loadingio/debounce.js": "0.0.1",
     "@loadingio/ldquery": "^1.1.1",
+    "@plotdb/csscope": "^0.2.0",
     "@plotdb/datahub": "0.0.6",
     "@plotdb/json0": "0.0.2",
     "@plotdb/pug-browser": "0.0.2",
+    "@plotdb/rescope": "^0.2.2",
     "@plotdb/sandbox.js": "0.0.1",
     "bootstrap": "^4.5.2",
     "bootstrap.ldui": "github:loadingio/bootstrap.ldui",
@@ -50,6 +52,7 @@
     "livescript": "^1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
+    "proxise": "0.0.1",
     "sharedb-wrapper": "github:zbryikt/sharedb-wrapper",
     "template": "github:zbryikt/template#v2.1.8",
     "uglify-js": "=3.2.0"
@@ -78,10 +81,13 @@
       "ldiconfont",
       "codemirror",
       "sharedb-wrapper",
+      "proxise",
       "@plotdb/datahub",
       "@plotdb/sandbox.js",
       "@plotdb/pug-browser",
       "@plotdb/block",
+      "@plotdb/rescope",
+      "@plotdb/csscope",
       "@plotdb/json0"
     ]
   }
