@@ -398,7 +398,6 @@
     plugin: function(arg$){
       var data, node, window, i$, to$, i, p;
       data = arg$.data, node = arg$.node, window = arg$.window;
-      console.log("]", data, this.plugins);
       for (i$ = 0, to$ = this.plugins.length; i$ < to$; ++i$) {
         i = i$;
         p = this.plugins[i];

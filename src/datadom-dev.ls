@@ -181,7 +181,6 @@ main = (opt = {}) ->
 
 main.prototype = Object.create(Object.prototype) <<< do
   plugin: ({data, node, window}) ->
-    console.log "]", data, @plugins
     for i from 0 til @plugins.length =>
       p = @plugins[i]
       if p.test(data) => return p.handle({data, node, window})

@@ -88,7 +88,6 @@
       return Promise.all(opts.map(function(opt){
         var ref$, n, v;
         opt == null && (opt = {});
-        console.log(">>>", opt);
         ref$ = [opt.name, opt.version || 'latest'], n = ref$[0], v = ref$[1];
         if (!(n && v)) {
           return Promise.reject((ref$ = new Error(), ref$.name = "ldError", ref$.id = 1015, ref$));
