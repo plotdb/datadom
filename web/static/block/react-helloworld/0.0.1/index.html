@@ -1,0 +1,20 @@
+<div block="inline"><script>({
+  pkg: {
+    dependencies: [
+      {
+        url: "https://unpkg.com/react@17/umd/react.development.js",
+        async: false
+      }, "https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ]
+  },
+  init: function(arg$){
+    var root, context, Hello;
+    root = arg$.root, context = arg$.context;
+    Hello = function(props){
+      return React.createElement('span', null, "React: Hello " + props.name);
+    };
+    return ReactDOM.render(React.createElement(Hello, {
+      name: "world"
+    }, null), root);
+  }
+});</script></div>

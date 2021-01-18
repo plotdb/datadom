@@ -1,0 +1,17 @@
+h5 hello world!
+p this is a sample block.
+style: :stylus
+  h5
+    background: #f00
+script: :lsc
+  do
+    init: (opt = {}) -> 
+      @root = opt.root
+      div = document.createElement("div")
+      @root.appendChild div
+      console.log 'init!'
+      @c = 0
+      setInterval (~>
+        div.innerText = @c
+        @c++
+      ), 1000

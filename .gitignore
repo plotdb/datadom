@@ -4,4 +4,3 @@ node_modules
 *.log
 secret.*
 web/.view
-dev

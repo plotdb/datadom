@@ -1,0 +1,96 @@
+<div class="form-long-answer my-4" ld-scope="ld-scope"><div>Leave your comment here.</div><div class="position-relative"><textarea class="form-control" rows="5" ld="input-field edit-panel"></textarea><div class="w-100 bg-light rounded p-3 text-break d-none" ld="preview-panel" style="min-height:200px"></div></div><div class="mt-2" ld="if-markdown-enabled"><div class="d-flex align-items-center"><div class="d-flex align-items-center text-sm text-muted mr-4"><input class="mr-1" type="checkbox" ld="use-markdown"/><div>啟用 Markdown 語法 ( <a href="https://markdown.tw/" target="_blank" rel="noopener noreferrer">語法說明</a> )</div></div><div class="d-none" ld="if-markdown"><div class="d-flex align-items-center text-sm text-muted mr-4"><input class="mr-1" type="checkbox" ld="toggle-preview"/><div>預覽</div></div></div></div></div><div class="d-none flex-grow-1 mt-4" ld="edit-only"><div class="text-nowrap d-flex align-items-center"><div class="mr-2">顯示並提供 Markdown 選項給填表者</div><div><div class="switch ml-2" ld="markdown-enabled"></div></div></div></div><style type="text/css"></style><script>({
+  pkg: {
+    author: "zbryikt",
+    name: "long-answer",
+    version: "0.0.1",
+    license: "MIT",
+    description: "",
+    dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"]
+  },
+  update: function(){},
+  render: function(){
+    return this.view.render();
+  },
+  init: function(arg$){
+    var root, mode, context, marked, view, this$ = this;
+    root = arg$.root, mode = arg$.mode, context = arg$.context;
+    mode = 'edit';
+    this.block = {};
+    marked = context.marked;
+    return this.view = view = new ldView({
+      root: root,
+      action: {
+        input: {
+          "use-markdown": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            ((ref$ = this$.block).value || (ref$.value = {})).useMarkdown = node.checked;
+            this$.update();
+            return view.render();
+          },
+          "input-field": function(arg$){
+            var node, ref$;
+            node = arg$.node;
+            ((ref$ = this$.block).value || (ref$.value = {})).content = node.value;
+            return this$.update();
+          },
+          "toggle-preview": function(arg$){
+            var node;
+            node = arg$.node;
+            this$.preview = !!node.checked;
+            return view.render();
+          }
+        },
+        click: {
+          "markdown-enabled": function(arg$){
+            var node, evt, ref$;
+            node = arg$.node, evt = arg$.evt;
+            ((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled = !((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled;
+            this$.update();
+            return this$.render();
+          }
+        }
+      },
+      handler: {
+        "edit-only": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', mode !== 'edit');
+        },
+        "input-field": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.value = ((ref$ = this$.block).value || (ref$.value = {})).content || '';
+        },
+        "markdown-enabled": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.classList.toggle('on', !!((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled);
+        },
+        "preview-panel": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          node.classList.toggle('d-none', !this$.preview);
+          if (this$.preview) {
+            return node.innerHTML = DOMPurify.sanitize(marked(((ref$ = this$.block).value || (ref$.value = {})).content || ''));
+          }
+        },
+        "edit-panel": function(arg$){
+          var node;
+          node = arg$.node;
+          return node.classList.toggle('d-none', !!this$.preview);
+        },
+        "if-markdown": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.classList.toggle('d-none', !((ref$ = this$.block).value || (ref$.value = {})).useMarkdown);
+        },
+        "if-markdown-enabled": function(arg$){
+          var node, ref$;
+          node = arg$.node;
+          return node.classList.toggle('d-none', !((ref$ = this$.block).config || (ref$.config = {})).markdownEnabled);
+        }
+      }
+    });
+  }
+});</script></div>

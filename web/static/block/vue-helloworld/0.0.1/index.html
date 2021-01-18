@@ -1,0 +1,15 @@
+<div class="outer" block="inline">Vue: {{message}}<script>({
+  pkg: {
+    dependencies: ["https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"]
+  },
+  init: function(arg$){
+    var root, context, app;
+    root = arg$.root, context = arg$.context;
+    return app = new Vue({
+      el: root,
+      data: {
+        message: "hello world!"
+      }
+    });
+  }
+});</script></div>

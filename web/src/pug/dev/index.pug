@@ -1,0 +1,40 @@
+extends /base.pug
+block prehead
+  base(href="../")
+block body
+  #root.w-1024.mx-auto.rwd.my-4
+block script
+  +script("/assets/lib/proxise/main/proxise.js")
+  +script("/assets/lib/@plotdb/csscope/main/csscope.js")
+  +script("/assets/lib/@plotdb/rescope/main/rescope.js")
+  +script("/assets/lib/@plotdb/block/main/block.js")
+  +script("/assets/lib/datadom/dev/datadom-dev.js")
+  script: :lsc
+
+    load-sample = ({name}) ->
+      manager.get {name, version: "0.0.1"}
+        .then -> it.create!
+        .then -> it.attach {root: document.getElementById(\container)}
+        .catch -> console.log "failed to load block #name", it
+
+    plugin = do
+      test: -> true
+      handle: (o) ->
+        return Promise.resolve!
+          .then -> manager.get {name: o.data.name, version: "0.0.1"}
+          .then (ret) -> debounce 2000 .then -> ret
+          .then -> it.create!
+          .then -> it.attach root: o.node
+          .then -> o.node
+
+    manager = new block.manager registry: ({name, version}) -> "/block/#name/#version/index.html"
+    manager.init!
+      .then -> ld$.fetch '/assets/data/data.json', {method: \GET}, {type: \json}
+      .then (data) ->
+        dd = new datadom {data, plugin}
+        dd.init!
+          .then ({node, promise}) ->
+            root.appendChild dd.get-node!
+          .then ->
+            console.log \done.
+      .catch -> console.log it

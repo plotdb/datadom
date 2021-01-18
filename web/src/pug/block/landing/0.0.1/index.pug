@@ -1,0 +1,12 @@
+.d-flex.align-items-center.justify-content-center.p-4.text-center(block="fit",style="background:url(/assets/img/block/DSC_7126.jpg) center center; background-size:cover"): div
+  h1 Some Powerful Words
+  hr
+  p.mb-4 a little more details about this project, better with one to two sentence.
+  .btn.btn-danger Get Started Now
+
+  script: :lsc
+    do
+      init: ->
+        console.log "[landing][init]", it
+      destroy: ->
+        console.log "[landing][destroy]", it

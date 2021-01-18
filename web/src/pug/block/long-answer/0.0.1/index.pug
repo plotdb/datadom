@@ -1,0 +1,65 @@
+.form-long-answer.my-4(ld-scope)
+  div Leave your comment here.
+  .position-relative
+    textarea.form-control(rows="5",ld="input-field edit-panel")
+    .w-100.bg-light.rounded.p-3.text-break.d-none(ld="preview-panel",style="min-height:200px")
+  .mt-2(ld="if-markdown-enabled"): .d-flex.align-items-center
+    .d-flex.align-items-center.text-sm.text-muted.mr-4
+      input.mr-1(type="checkbox",ld="use-markdown")
+      div 啟用 Markdown 語法 ( #[a(href="https://markdown.tw/",target="_blank",rel="noopener noreferrer") 語法說明] )
+    .d-none(ld="if-markdown"): .d-flex.align-items-center.text-sm.text-muted.mr-4
+      input.mr-1(type="checkbox",ld="toggle-preview")
+      div 預覽
+
+  .d-none.flex-grow-1.mt-4(ld="edit-only"): .text-nowrap.d-flex.align-items-center
+    .mr-2 顯示並提供 Markdown 選項給填表者
+    div: .switch.ml-2(ld="markdown-enabled")
+  style(type="text/css"): :stylus
+  script: :lsc
+    do
+      pkg: do
+        author: "zbryikt"
+        name: "long-answer"
+        version: "0.0.1"
+        license: "MIT"
+        description: ""
+        dependencies: [
+          "https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"
+        ]
+      update: ->
+      render: -> @view.render!
+      init: ({root,mode,context}) ->
+        mode = \edit
+        @block = {}
+        marked = context.marked
+        @view = view = new ldView do
+          root: root
+          action:
+            input: do
+              "use-markdown": ({node}) ~>
+                @block.{}value.use-markdown = node.checked
+                @update!
+                view.render!
+              "input-field": ({node}) ~>
+                @block.{}value.content = node.value
+                @update!
+              "toggle-preview": ({node}) ~>
+                @preview = !!node.checked
+                view.render!
+            click: do
+              "markdown-enabled": ({node, evt}) ~>
+                @block.{}config.markdown-enabled = !@block.{}config.markdown-enabled
+                @update!
+                @render!
+
+          handler: do
+            "edit-only": ({node}) -> node.classList.toggle \d-none, mode != \edit
+            "input-field": ({node}) ~> node.value = @block.{}value.content or ''
+            "markdown-enabled": ({node}) ~> node.classList.toggle \on, !!@block.{}config.markdown-enabled
+            "preview-panel": ({node}) ~>
+              node.classList.toggle \d-none, !@preview
+              if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}value.content or ''))
+            "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
+            "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
+            "if-markdown-enabled": ({node}) ~> node.classList.toggle \d-none, !@block.{}config.markdown-enabled
+
