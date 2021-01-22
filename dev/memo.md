@@ -1,4 +1,10 @@
 
+ - block obj
+   - how do them communicate?
+   - where can we keep them?
+   - can we query and get them?
+
+
 think about this:
  - datadom parse the whole tree then apply plugin
  - plugin can decide whether to parse datadom or not ( by datadom )
