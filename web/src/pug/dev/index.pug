@@ -21,11 +21,16 @@ block script
       id: "@plotdb/block@0.0.1"
       test: -> true
       serialize: (o) ->
+        o.data <<< {name: o.node.block.name, version: o.node.block.version}
+
+      deserialize: (o) ->
         return Promise.resolve!
           .then -> manager.get {name: o.data.name, version: "0.0.1"}
           .then (ret) -> debounce 2000 .then -> ret
           .then -> it.create!
-          .then -> it.attach root: o.node
+          .then ->
+            o.node.block = it
+            it.attach root: o.node
           .then -> o.node
 
     manager = new block.manager registry: ({name, version}) -> "/block/#name/#version/index.html"
@@ -35,7 +40,16 @@ block script
         dd = new datadom {data, plugin}
         dd.init!
           .then ({node, promise}) ->
-            root.appendChild dd.get-node!
+            root.appendChild node
+            promise
           .then ->
-            console.log \done.
+            console.log 'deserialized. now try serializing again ... '
+          .then ->
+            datadom.serialize root.childNodes.0, [plugin], window
+          .then ({data, promise}) -> 
+            promise.then -> return data
+          .then -> console.log data
+          .then -> console.log "serialized."
+
+            
       .catch -> console.log it

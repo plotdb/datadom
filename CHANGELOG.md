@@ -1,7 +1,8 @@
 # 0.1.0 (upcoming)
 
  - adding support to `comment` and `document-fragment`.
- - add plugin specification
+ - add plugin specification, and refactor code following plugin sepc.
+ - make `serialize` asynchronous and process custom type correctly.
 
 
 # 0.0.4

@@ -27,6 +27,10 @@ plugin = {
     return true;
   },
   serialize: function(o){
+    var ref$;
+    return ref$ = o.data, ref$.name = o.node.block.name, ref$.version = o.node.block.version, ref$;
+  },
+  deserialize: function(o){
     return Promise.resolve().then(function(){
       return manager.get({
         name: o.data.name,
@@ -39,6 +43,7 @@ plugin = {
     }).then(function(it){
       return it.create();
     }).then(function(it){
+      o.node.block = it;
       return it.attach({
         root: o.node
       });
@@ -69,9 +74,22 @@ manager.init().then(function(){
   return dd.init().then(function(arg$){
     var node, promise;
     node = arg$.node, promise = arg$.promise;
-    return root.appendChild(dd.getNode());
+    root.appendChild(node);
+    return promise;
   }).then(function(){
-    return console.log('done.');
+    return console.log('deserialized. now try serializing again ... ');
+  }).then(function(){
+    return datadom.serialize(root.childNodes[0], [plugin], window);
+  }).then(function(arg$){
+    var data, promise;
+    data = arg$.data, promise = arg$.promise;
+    return promise.then(function(){
+      return data;
+    });
+  }).then(function(){
+    return console.log(data);
+  }).then(function(){
+    return console.log("serialized.");
   });
 })['catch'](function(it){
   return console.log(it);
