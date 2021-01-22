@@ -7,7 +7,30 @@
   "child": [
     {
       "type": "block",
-      "name": "long-answer"
+      "name": "long-answer",
+      "child": [
+
+        {
+          "type": "tag",
+          "name": "h3",
+          "style": [],
+          "attr": [],
+          "cls": [],
+          "child": [
+            {
+              "type": "text",
+              "value": "inner hello world!",
+              "child": []
+            }
+          ]
+        }
+
+      ]
+
+    },
+    {
+      "type": "block",
+      "name": "cta"
     },
     {
       "type": "tag",

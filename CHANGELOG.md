@@ -1,7 +1,7 @@
 # 0.1.0 (upcoming)
 
  - adding support to `comment` and `document-fragment`.
- - better support of plugins ( wip )
+ - add plugin specification
 
 
 # 0.0.4

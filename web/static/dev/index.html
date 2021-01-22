@@ -22,10 +22,11 @@ loadSample = function(arg$){
   });
 };
 plugin = {
+  id: "@plotdb/block@0.0.1",
   test: function(){
     return true;
   },
-  handle: function(o){
+  serialize: function(o){
     return Promise.resolve().then(function(){
       return manager.get({
         name: o.data.name,

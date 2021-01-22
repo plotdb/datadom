@@ -1,11 +1,16 @@
 if module? and require? => require! <[@plotdb/json0]>
 
+asc = (n,node) ->
+  if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
+  if Array.isArray(n.style) => n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
+  if Array.isArray(n.cls) => node.classList.add.apply node.classList, n.cls.filter(->it)
+
 /**
  * convert a DOM Node into JSON.
  * @param {Element} n - DOM node.
  * @return {json} a json object containing information of the input DOM Node.
  */
-wrap = (n) ->
+wrap = (n, plugins, win = window) ->
   name = n.nodeName.toLowerCase!
   if name == \#text => return {type: \text, value: n.nodeValue}
   if name == \#comment => return {type: \comment, value: n.nodeValue}
@@ -16,49 +21,26 @@ wrap = (n) ->
     [[v.nodeName, v.nodeValue] for v in n.attributes].filter(->!(it.0 in <[style class]>))
   else []
   cls = if n.classList => [v for v in n.classList] else []
-  return {type: \tag, name: name, style, attr, cls}
+  node = {type: \tag, name: name, style, attr, cls}
+  if n.hasAttribute(\custom) and n._plugin =>
+    node <<< {type: \custom} <<< n._plugin{name,version,data,plugin}
+    # TODO manually deserialize
+  return node
 
 /**
  * serialize a DOM tree.
  * @param {Element} n - DOM tree root node.
  * @return {json} a serialized JSON representing the input DOM.
  */
-serialize = (n, plugin) ->
-  node = wrap n
+serialize = (n, plugins, win = window) ->
+  node = wrap n, plugins, win
   child = []
   if !n.childNodes => return
   for i from 0 til n.childNodes.length =>
-    ret = serialize(n.childNodes[i], plugin)
+    ret = serialize(n.childNodes[i], plugins, win)
     child.push ret
   node.child = child
   node
-
-serialize-general = (n) ->
-  name = n.nodeName.toLowerCase!
-  if name == \#text => return {type: \text, value: n.nodeValue}
-  if name == \#comment => return {type: \comment, value: n.nodeValue}
-  if name == \#document-fragment => return {type: \document-fragment}
-  style = if n.style =>
-    [i for i from 0 til n.style.length].map(-> [n.style[it],n.style[n.style[it]]])
-  else []
-  attr = if n.attributes =>
-    [[v.nodeName, v.nodeValue] for v in n.attributes].filter(->!(it.0 in <[style class]>))
-  else []
-  cls = if n.classList => [v for v in n.classList] else []
-  node = {type: \tag, name: name, style, attr, cls}
-
-serialize-recurse = (n, plugin) ->
-  if is-block(n) => node = serialize-plugin(n, plugin)
-  else node = serialize-general n
-  child = []
-  if !n.childNodes => return
-  for i from 0 til n.childNodes.length =>
-    ret = serialize(n.childNodes[i], plugin)
-    child.push ret
-  node.child = child
-  node
-
-serialize-plugin = (n, plugin) ->
 
 /**
  * deserialize a JSON into corresponding DOM tree.
@@ -68,7 +50,7 @@ serialize-plugin = (n, plugin) ->
  *   - node {Element}: deserialized DOM tree or placeholder div for being replaced by instantiated block.
  *   - promise {Promise}: resolve to all pending block retrieval.
  */
-deserialize = (n, plugin, win = window) ->
+deserialize = (n, plugins, win = window) ->
   doc = win.document
   queue = []
   Promise.resolve!
@@ -79,54 +61,46 @@ deserialize = (n, plugin, win = window) ->
         | \comment => return doc.createComment n.value
         | \document-fragment =>
           node = doc.createDocumentFragment!
-          for c in (n.child or []) =>
-            ret = _ c
-            if ret => node.appendChild ret
+          for c in (n.child or []) => if ret = _(c) => node.appendChild ret
           return node
         | \tag =>
           node = doc.createElement n.name
-          if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
-          if Array.isArray(n.style) => n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
-          if Array.isArray(n.cls) => node.classList.add.apply node.classList, n.cls.filter(->it)
-          for c in (n.child or []) =>
-            ret = _ c
-            if ret => node.appendChild ret
+          asc n,node
+          for c in (n.child or []) => if ret = _(c) => node.appendChild ret
           return node
         | otherwise
+          [node,promise] = [doc.createElement(\div), null]
+          for c in (n.child or []) => if ret = _(c) => node.appendChild ret
+          plugs = for c in (n.plug or []) => _(c)
 
-          node = doc.createElement \div
-          node.setAttribute \block, ""
-          if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
-          if Array.isArray(n.style) => n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
-          if Array.isArray(n.cls) => node.classList.add.apply node.classList, n.cls.filter(->it)
-          for c in (n.child or []) =>
-            ret = _ c
-            if ret => node.appendChild ret
-
-          plugs = []
-          for c in (n.plugs or []) => plugs.push _(c)
+          for i from 0 til plugins.length =>
+            if !plugins[i].test({data: n}) => continue
+            plugin = plugins[i]
+            break
 
           if !plugin =>
-            node.appendChild doc.createTextNode "(unknown node)"
+            node.appendChild doc.createTextNode "(unknown)"
             return node
 
-          ret = plugin {data: n, node: node, window: win}
+          ret = plugin.serialize {data: n, node: node, window: win}
 
-          if !ret => 
-            node.appendChild doc.createTextNode "(unknown node)"
-            return node
+          if !ret => node.appendChild doc.createTextNode "(unknown)"
           else if ret instanceof Promise =>
-            [promise] = [ret]
-            node.appendChild t = doc.createTextNode "(loading ... )"
-            promise = promise.then(->
+            node.appendChild t = doc.createTextNode "(.. loading ..)"
+            promise = ret.then((new-node) ->
               if t.parentNode => t.parentNode.removeChild(t)
-              if node != it => node.replaceWith it
-              return it
+              # what if node is not yet appended?
+              # we may need to pend with Proxise until datadom parsing is done.
+              if node != new-node => node.replaceWith new-node
+              new-node.setAttribute \dd-plugin, plugin.id
+              asc(n,new-node)
+              return new-node
             )
-          else if ret instanceof win.Element =>
-            [node, promise] = [ret, null]
-          else {node,promise} = (ret or {})
+          else if ret instanceof win.Element => node = ret
+          else {node,promise} = ret
           if promise => queue.push promise
+          node.setAttribute \dd-plugin, plugin.id
+          asc(n,node)
           return node
       _(n)
     .then (node) ->
@@ -161,7 +135,7 @@ locate = (op, data, root) ->
     obj.setAttribute \class, dd.cls.join(' ')
   | \attr
     Array.from(obj.attributes).map ->
-      if !dd.attr[it.name] and !(it.name in <[block style class]>) => obj.removeAttribute it.name
+      if !dd.attr[it.name] and !(it.name in <[custom style class]>) => obj.removeAttribute it.name
     dd.attr.map -> obj.setAttribute it.0, it.1
   | \child
     # other case?
@@ -180,16 +154,11 @@ main = (opt = {}) ->
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
-  plugin: ({data, node, window}) ->
-    for i from 0 til @plugins.length =>
-      p = @plugins[i]
-      if p.test(data) => return p.handle({data, node, window})
-    return null
   init: ->
     if @node =>
-      Promise.resolve!then ~> @data = serialize(@node, ((o) ~> @plugin o))
+      Promise.resolve!then ~> @data = serialize(@node, @plugins, @window)
     else
-      deserialize(@data, ((o) ~> @plugin o), @window)
+      deserialize(@data, @plugins, @window)
         # node might be a proxy which will be updated once promise is resolved.
         # return promise which is resolved when all pending plugins are processed.
         .then ({node, promise}) ~> @node = node; return {node, promise}

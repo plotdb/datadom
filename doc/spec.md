@@ -24,6 +24,7 @@
    - for `tag` type: data for accessing programmatically through this tag.
    - for `custom` type: custom data following corresponding plugin spec.
  - `child` - array of child nodes. not applicable for `text` and `comment` node type.
+ - `plug` - array of plug nodes. only feasible for `custom` type.
  - `id` - unique representation of this node with suuid.
  - `link` - connection to other node. a list of node `id`.
 

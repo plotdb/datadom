@@ -18,8 +18,9 @@ block script
         .catch -> console.log "failed to load block #name", it
 
     plugin = do
+      id: "@plotdb/block@0.0.1"
       test: -> true
-      handle: (o) ->
+      serialize: (o) ->
         return Promise.resolve!
           .then -> manager.get {name: o.data.name, version: "0.0.1"}
           .then (ret) -> debounce 2000 .then -> ret
