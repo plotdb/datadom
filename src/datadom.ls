@@ -30,7 +30,9 @@ serialize = (node, plugins, win = window) ->
           style = if !node.style => []
           else [i for i from 0 til node.style.length].map(-> [node.style[it],node.style[node.style[it]]])
           attr = if !node.attributes => []
-          else [[v.nodeName, v.nodeValue] for v in node.attributes].filter(->!(it.0 in <[style class]>))
+          else
+            [[v.nodeName, v.nodeValue] for v in node.attributes]
+              .filter(->!(/^dd-/.exec(it.0) or it.0 in <[style class]>))
           cls = if !node.classList => [] else [v for v in node.classList]
           data = {style, attr, cls, child: []}
           for i from 0 til node.childNodes.length => if ret = _(node.childNodes[i]) => data.child.push ret
@@ -47,7 +49,6 @@ serialize = (node, plugins, win = window) ->
           if !plugin =>
             data.plugin = "unknown"
             return data
-
           data.plugin = plugin.id
 
           ret = plugin.serialize({data, node, window})

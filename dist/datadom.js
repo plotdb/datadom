@@ -93,7 +93,7 @@
               return results$;
             }()).filter(function(it){
               var ref$;
-              return !((ref$ = it[0]) === 'style' || ref$ === 'class');
+              return !(/^dd-/.exec(it[0]) || ((ref$ = it[0]) === 'style' || ref$ === 'class'));
             });
           cls = !node.classList
             ? []

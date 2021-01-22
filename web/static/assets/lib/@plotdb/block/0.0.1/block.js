@@ -280,7 +280,9 @@
     create: function(){
       var ret;
       ret = new block.instance({
-        block: this
+        block: this,
+        name: this.name,
+        version: this.version
       });
       return ret.init().then(function(){
         return ret;
@@ -306,6 +308,8 @@
     var this$ = this;
     opt == null && (opt = {});
     this.block = opt.block;
+    this.name = opt.name;
+    this.version = opt.version;
     this.datadom = new datadom({
       data: JSON.parse(JSON.stringify(this.block.getDomData()))
     });

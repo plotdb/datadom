@@ -1,10 +1,10 @@
-<!DOCTYPE html><html><head><base href="../"><link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/main/css/bootstrap.min.css"><link rel="stylesheet" type="text/css" href="assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.css"><link rel="stylesheet" type="text/css" href="assets/lib/ldiconfont/main/ldif.min.css"><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inconsolata&amp;display=swap"><link rel="stylesheet" type="text/css" href="assets/lib/ldcover/main/ldcv.min.css"><link rel="stylesheet" type="text/css" href="css/index.css"></head><body><div class="w-1024 mx-auto rwd my-4" id="root"></div><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/lib/codemirror.css"><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/theme/ayu-mirage.css"><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/theme/mdn-like.css"><script type="text/javascript" src="assets/lib/codemirror/main/lib/codemirror.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/javascript/javascript.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/css/css.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/xml/xml.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/livescript/livescript.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/stylus/stylus.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/pug/pug.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/markdown/markdown.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/addon/dialog/dialog.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/addon/search/searchcursor.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/keymap/vim.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/BrowserFS/2.0.0/browserfs.min.js"></script><script>BrowserFS.install(window);
+<!DOCTYPE html><html><head><base href="../"><link rel="stylesheet" type="text/css" href="assets/lib/bootstrap/main/css/bootstrap.min.css"><link rel="stylesheet" type="text/css" href="assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.css"><link rel="stylesheet" type="text/css" href="assets/lib/ldiconfont/main/ldif.min.css"><link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inconsolata&amp;display=swap"><link rel="stylesheet" type="text/css" href="assets/lib/ldcover/main/ldcv.min.css"><link rel="stylesheet" type="text/css" href="css/index.css"></head><body><div class="row w-1200 rwd mx-auto my-4"><div class="col-md"><div class="text-center">load from fected json</div><hr><div class="w-100 mx-auto my-2 bg-light p-4 border shadow" id="root"></div></div><div class="col-md"><div class="text-center">deserialize from serialized dom</div><hr><div class="w-100 mx-auto my-2 bg-light p-4 border shadow" id="rootalt"></div></div></div><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/lib/codemirror.css"><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/theme/ayu-mirage.css"><link rel="stylesheet" type="text/css" href="assets/lib/codemirror/main/theme/mdn-like.css"><script type="text/javascript" src="assets/lib/codemirror/main/lib/codemirror.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/javascript/javascript.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/css/css.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/xml/xml.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/htmlmixed/htmlmixed.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/livescript/livescript.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/stylus/stylus.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/pug/pug.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/mode/markdown/markdown.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/addon/dialog/dialog.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/addon/search/searchcursor.js"></script><script type="text/javascript" src="assets/lib/codemirror/main/keymap/vim.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/BrowserFS/2.0.0/browserfs.min.js"></script><script>BrowserFS.install(window);
 BrowserFS.configure({
   fs: 'LocalStorage'
 }, function(){
   var fs;
   return window.fs = fs = require("fs");
-});</script><script type="text/javascript" src="assets/lib/@plotdb/pug-browser/main/pug.min.js"></script><script type="text/javascript" src="assets/lib/@plotdb/pug-browser/main/html2pug.min.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/sandbox.js/main/sandbox.min.js"></script><script type="text/javascript" src="assets/lib/sharedb-wrapper/main/client.bundle.min.js"></script><script type="text/javascript" src="assets/lib/@plotdb/json0/main/json0.min.js"></script><script type="text/javascript" src="assets/lib/bootstrap.native/main/bootstrap-native.min.js"></script><script type="text/javascript" src="assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.js"></script><script type="text/javascript" src="assets/lib/@loadingio/ldquery/main/ldq.min.js"></script><script type="text/javascript" src="assets/lib/@loadingio/debounce.js/main/debounce.min.js"></script><script type="text/javascript" src="assets/lib/ldcover/main/ldcv.min.js"></script><script type="text/javascript" src="assets/lib/ldview/main/ldview.min.js"></script><script type="text/javascript" src="assets/lib/datadom/dev/datadom.min.js"></script><script type="text/javascript" src="/assets/lib/proxise/main/proxise.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/csscope/main/csscope.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/rescope/main/rescope.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/block/main/block.js"></script><script type="text/javascript" src="/assets/lib/datadom/dev/datadom.js"></script><script>var loadSample, plugin, manager;
+});</script><script type="text/javascript" src="assets/lib/@plotdb/pug-browser/main/pug.min.js"></script><script type="text/javascript" src="assets/lib/@plotdb/pug-browser/main/html2pug.min.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/sandbox.js/main/sandbox.min.js"></script><script type="text/javascript" src="assets/lib/sharedb-wrapper/main/client.bundle.min.js"></script><script type="text/javascript" src="assets/lib/@plotdb/json0/main/json0.min.js"></script><script type="text/javascript" src="assets/lib/bootstrap.native/main/bootstrap-native.min.js"></script><script type="text/javascript" src="assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.js"></script><script type="text/javascript" src="assets/lib/@loadingio/ldquery/main/ldq.min.js"></script><script type="text/javascript" src="assets/lib/@loadingio/debounce.js/main/debounce.min.js"></script><script type="text/javascript" src="assets/lib/ldcover/main/ldcv.min.js"></script><script type="text/javascript" src="assets/lib/ldview/main/ldview.min.js"></script><script type="text/javascript" src="assets/lib/datadom/dev/datadom.min.js"></script><script type="text/javascript" src="/assets/lib/proxise/main/proxise.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/csscope/main/csscope.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/rescope/main/rescope.js"></script><script type="text/javascript" src="/assets/lib/@plotdb/block/main/block.js"></script><script>var loadSample, plugin, manager;
 loadSample = function(arg$){
   var name;
   name = arg$.name;
@@ -28,7 +28,10 @@ plugin = {
   },
   serialize: function(o){
     var ref$;
-    return ref$ = o.data, ref$.name = o.node.block.name, ref$.version = o.node.block.version, ref$;
+    ref$ = o.data;
+    ref$.name = o.node.block.name;
+    ref$.version = o.node.block.version;
+    return o.data.child = [];
   },
   deserialize: function(o){
     return Promise.resolve().then(function(){
@@ -86,10 +89,17 @@ manager.init().then(function(){
     return promise.then(function(){
       return data;
     });
+  }).then(function(data){
+    console.log("serialized data: ", data);
+    console.log("serialized. deserialize again ...");
+    return datadom.deserialize(data, [plugin], window);
+  }).then(function(arg$){
+    var node, promise;
+    node = arg$.node, promise = arg$.promise;
+    rootalt.appendChild(node);
+    return promise;
   }).then(function(){
-    return console.log(data);
-  }).then(function(){
-    return console.log("serialized.");
+    return console.log("deserialized.");
   });
 })['catch'](function(it){
   return console.log(it);
