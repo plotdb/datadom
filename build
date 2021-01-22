@@ -9,10 +9,10 @@ npx lsc -cp src/datadom.ls > dist/datadom.js
 echo "minify datadom.js -> datadom.min.js ..."
 npx uglifyjs dist/datadom.js > dist/datadom.min.js
 
-echo "building datadom-dev.ls -> datadom-dev.js ..."
-npx lsc -cp src/datadom-dev.ls > dist/datadom-dev.js
-echo "minify datadom-dev.js -> datadom-dev.min.js ..."
-npx uglifyjs dist/datadom-dev.js > dist/datadom-dev.min.js
+echo "building datadom.ls -> datadom.js ..."
+npx lsc -cp src/datadom.ls > dist/datadom.js
+echo "minify datadom.js -> datadom.min.js ..."
+npx uglifyjs dist/datadom.js > dist/datadom.min.js
 
 echo "copy dist to web ..."
 rm -rf web/static/assets/lib/datadom/dev/
