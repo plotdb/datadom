@@ -48,5 +48,5 @@ It may involve actions like querying a remote registry thus datadom expects plug
  - `test(datadom)`: test if the input datadom node is supported by this plugin.
  - `serialize(node)`: serialize a give node
  - `deserialize(data)`: deserialize a give datadom node.
-
+ - `create(node)`: create an object for this node.
 

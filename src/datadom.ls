@@ -100,7 +100,7 @@ deserialize = (n, plugins, win = window) ->
             node.appendChild doc.createTextNode "(unknown)"
             return node
 
-          ret = plugin.deserialize {data: n, node: node, window: win}
+          ret = plugin.deserialize {data: n, node, plugs, window: win}
 
           if !ret => node.appendChild doc.createTextNode "(unknown)"
           else if ret instanceof Promise =>
