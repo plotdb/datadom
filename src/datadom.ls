@@ -167,20 +167,22 @@ locate = (op, data, root) ->
 main = (opt = {}) ->
   @opt = opt
   @window = if opt.window => that else if window? => window else null
-  @plugins = if Array.isArray(opt.plugin) => opt.plugin else if opt.plugin => [opt.plugin] else []
+  @plugins = if Array.isArray(opt.plugins) => opt.plugins else if opt.plugins => [opt.plugins] else []
   if opt.data => @data = opt.data
   else if opt.node => @node = opt.node
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
   init: ->
-    if @node =>
-      Promise.resolve!then ~> @data = serialize(@node, @plugins, @window)
-    else
+    if @data =>
       deserialize(@data, @plugins, @window)
         # node might be a proxy which will be updated once promise is resolved.
         # return promise which is resolved when all pending plugins are processed.
         .then ({node, promise}) ~> @node = node; return {node, promise}
+    else
+      if !@node => @node = document.createElement \div
+      serialize(@node, @plugins, @window)
+        .then ({data, promise}) -> @data = data; return {data, promise}
   get-data: -> @data
   get-node: -> @node
   update: (ops = []) ->
