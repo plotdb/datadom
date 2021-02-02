@@ -53,4 +53,5 @@ It may involve actions like querying a remote registry thus datadom expects plug
    - if there are any returned DOM constructed locally, it should help create custom object for any custom elements.
    - should help integrate DOM from child and plug.
  - `create(node)`: create an object for this node.
+   - don't have to define here? tentative
 

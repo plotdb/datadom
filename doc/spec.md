@@ -94,7 +94,7 @@ When a data node `D` with `custom` name found, it should be converted to custom 
 
 ## Custom Object - Custom DOM Manipulaion Object
 
-All custom DOM have an internal object - called `Custom Object` - created using `plugin.create(node)`. datadom always ensure an object returned when `get-object` is called:
+All custom DOM have an internal object - called `Custom Object` - created using `plugin.create(node)`(should not be defined here?). datadom always ensure an object returned when `get-object` is called:
 
     datadom.get-object = (n,p) ->
       if datadom.wm.get(n) => return that

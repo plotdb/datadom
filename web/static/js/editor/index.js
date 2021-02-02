@@ -1,7 +1,7 @@
 (function(it){
   return it();
 })(function(){
-  var lc, sdb, watch, pluginTest, plugins, view;
+  var lc, sdb, watch, pluginTestObj, pluginTest, plugins, view;
   lc = {};
   sdb = new sharedbWrapper();
   watch = function(ops, source){
@@ -20,12 +20,52 @@
       return pugNode.innerText = pug;
     });
   };
-  pluginTest = {
+  pluginTestObj = function(opt){
+    var ref$;
+    opt == null && (opt = {});
+    this.data = {
+      data: (ref$ = opt.data || {}).data,
+      dev: ref$.dev
+    };
+    this.data.dev = true;
+    return this;
+  };
+  pluginTestObj.prototype = import$(Object.create(Object.prototype), {
+    serialize: function(){
+      var ref$;
+      return {
+        data: (ref$ = this.data).data,
+        dev: ref$.dev
+      };
+    }
+  });
+  window.pt = pluginTest = {
     name: "plugin-test",
     version: "0.0.1",
+    map: {
+      set: function(node, obj){
+        console.log(node);
+        if (!pluginTest.map.wm) {
+          pluginTest.map.wm = new WeakMap();
+        }
+        return pluginTest.map.wm.set(node, obj);
+      },
+      get: function(node){
+        if (!pluginTest.map.wm) {
+          pluginTest.map.wm = new WeakMap();
+        }
+        return pluginTest.map.wm.get(node);
+      }
+    },
     serialize: function(arg$){
-      var rootData, node, plugins, window;
+      var rootData, node, plugins, window, obj;
       rootData = arg$.data, node = arg$.node, plugins = arg$.plugins, window = arg$.window;
+      console.log("serialize ", node);
+      obj = pluginTest.map.get(node);
+      console.log(obj);
+      if (obj) {
+        import$(rootData, obj.serialize());
+      }
       return Promise.all(Array.from(node.childNodes).map(function(n, i){
         return datadom.serialize(n, plugins);
       })).then(function(list){
@@ -40,10 +80,12 @@
     deserialize: function(arg$){
       var data, node, plugs, plugins, window;
       data = arg$.data, node = arg$.node, plugs = arg$.plugs, plugins = arg$.plugins, window = arg$.window;
+      console.log("deserialize", node);
+      pluginTest.map.set(node, new pluginTestObj({
+        data: data
+      }));
+      console.log("reget", pluginTest.map.get(node));
       return node;
-    },
-    create: function(){
-      return console.log('create');
     }
   };
   plugins = [pluginTest];
@@ -92,7 +134,16 @@
             var node, promise;
             node = arg$.node, promise = arg$.promise;
             domroot.innerHTML = "";
-            return domroot.appendChild(node);
+            domroot.appendChild(node);
+            return promise.then(function(){
+              return datadom.serialize(node, plugins);
+            });
+          }).then(function(arg$){
+            var data, promise;
+            data = arg$.data, promise = arg$.promise;
+            return promise.then(function(){
+              return console.log(data);
+            });
           });
           ops = json0.diff(doc.data, json);
           return doc.submitOp(ops);
@@ -129,3 +180,8 @@
     });
   });
 });
+function import$(obj, src){
+  var own = {}.hasOwnProperty;
+  for (var key in src) if (own.call(src, key)) obj[key] = src[key];
+  return obj;
+}

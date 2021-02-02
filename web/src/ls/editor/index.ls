@@ -12,18 +12,44 @@ watch = (ops, source) ->
       pug-node = ld$.find '[ld=pug]', 0
       pug-node.innerText = pug
 
-plugin-test = do
+plugin-test-obj = (opt = {}) ->
+  @data = (opt.data or {}){data,dev}
+  @data.dev = true
+  @
+
+plugin-test-obj.prototype = Object.create(Object.prototype) <<< do
+  serialize: -> return @data{data,dev}
+  
+
+window.pt = plugin-test = do
   name: "plugin-test",
   version: "0.0.1",
+  map: do
+    set: (node, obj) -> 
+      console.log node
+      if !plugin-test.map.wm => plugin-test.map.wm = new WeakMap!
+      plugin-test.map.wm.set node, obj
+    get: (node) ->
+      if !plugin-test.map.wm => plugin-test.map.wm = new WeakMap!
+      plugin-test.map.wm.get node
+
+
   # Data from DOM directly. No plugs mechanism.
   serialize: ({data: root-data, node, plugins, window}) ->
+    console.log "serialize ", node
+    obj = plugin-test.map.get node
+    console.log obj
+    if obj => root-data <<< obj.serialize!
     Promise.all(Array.from(node.childNodes).map (n,i) -> datadom.serialize n, plugins )
       .then (list) -> 
         root-data.child ++= list.map(->it.data)
         Promise.all list.map(->it.promise)
   # DOM from node. No plugs mechanism.
-  deserialize: ({data,node,plugs,plugins,window}) -> return node
-  create: -> console.log 'create'
+  deserialize: ({data,node,plugs,plugins,window}) ->
+    console.log "deserialize", node
+    plugin-test.map.set node, (new plugin-test-obj {data})
+    console.log "reget",plugin-test.map.get node
+    return node
 
 plugins = [plugin-test]
 
@@ -67,6 +93,9 @@ sdb.get {id: \sample, watch: watch, create: -> {} }
                 .then ({node, promise}) ->
                   domroot.innerHTML = ""
                   domroot.appendChild node
+                  promise.then ->
+                    datadom.serialize(node, plugins)
+                .then ({data, promise}) -> promise.then ->  console.log data
               ops = json0.diff doc.data, json
               doc.submitOp ops
 

@@ -6,6 +6,7 @@ find-plugin = (plugins = [], n) ->
   for i from 0 til plugins.length => if n == plugins[i].name => return plugins[i]
   return null
 
+obj-map = new WeakMap!
 
 asc = (n,node) ->
   if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
