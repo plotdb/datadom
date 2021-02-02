@@ -92,11 +92,9 @@ When a data node `D` with `custom` name found, it should be converted to custom 
         node
 
 
-## Plugin
+## Custom Object - Custom DOM Manipulaion Object
 
-## object initialization
-
-All custom DOM have an internal object, created using `plugin.create(node)`. datadom always ensure an object returned when `get-object` is called:
+All custom DOM have an internal object - called `Custom Object` - created using `plugin.create(node)`. datadom always ensure an object returned when `get-object` is called:
 
     datadom.get-object = (n,p) ->
       if datadom.wm.get(n) => return that
@@ -116,3 +114,5 @@ However creation of this object may involve the initialization of DOM, so it sho
       some-internal-work(obj)
         .then (node) ->
           datadom.prepare-object(node,p)
+
+As shown above, plugin may create DOM elements directly ( in some-interal-work ) without datadom's help. In this case, `custom object` for custom elements in the returned DOM may not yet be created. Plugin is responsible for initializing these object by calling `datadom.prepare-object` ( or something like that, TBD. )

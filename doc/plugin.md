@@ -44,9 +44,13 @@ It may involve actions like querying a remote registry thus datadom expects plug
 
 ## Spec
 
- - `id`: plugin id, in `name@version` format.
- - `test(datadom)`: test if the input datadom node is supported by this plugin.
- - `serialize(node)`: serialize a give node
- - `deserialize(data)`: deserialize a give datadom node.
+ - `name`: plugin name, follow npm package name convention.
+ - `version`: plugin version, in `semver` format.
+ - `serialize({data, node, plugins, window})`: serialize a give node into data.
+   - should always serialize into the given `data` object.
+   - need to help serialize corresponding nodes into plugs and child.
+ - `deserialize({data, node, plugs, plugins, window})`: deserialize a give datadom node from data.
+   - if there are any returned DOM constructed locally, it should help create custom object for any custom elements.
+   - should help integrate DOM from child and plug.
  - `create(node)`: create an object for this node.
 

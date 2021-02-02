@@ -1,5 +1,12 @@
 if module? and require? => require! <[@plotdb/json0]>
 
+find-plugin = (plugins = [], n) ->
+  n = n.split('@')
+  [n,v] = if !n.0 => ["@#{n.1}", n.2] else [n.0,n.1]
+  for i from 0 til plugins.length => if n == plugins[i].name => return plugins[i]
+  return null
+
+
 asc = (n,node) ->
   if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
   if Array.isArray(n.style) => n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
@@ -18,8 +25,8 @@ serialize = (node, plugins, win = window) ->
   Promise.resolve!
     .then ->
       _ = (node) ->
-        name = node.nodeName.toLowerCase!
-        switch name
+        nodename = node.nodeName.toLowerCase!
+        switch nodename
         | \#text => return {type: \text, value: node.nodeValue}
         | \#comment => return {type: \comment, value: node.nodeValue}
         | \#document-fragment =>
@@ -34,24 +41,21 @@ serialize = (node, plugins, win = window) ->
             [[v.nodeName, v.nodeValue] for v in node.attributes]
               .filter(->!(/^dd-/.exec(it.0) or it.0 in <[style class]>))
           cls = if !node.classList => [] else [v for v in node.classList]
-          data = {style, attr, cls, child: []}
-          for i from 0 til node.childNodes.length => if ret = _(node.childNodes[i]) => data.child.push ret
+          data = {style, attr, cls, child: [], plug: []}
 
           # tag
           if !node.hasAttribute(\dd-plugin) =>
-            return data <<< {type: \tag, name: node.nodeName}
+            # for custom elements, child and plug are left for plugin to resolve
+            for i from 0 til node.childNodes.length => if ret = _(node.childNodes[i]) => data.child.push ret
+            return data <<< {type: \tag, name: nodename}
 
           # custom
           data.type = \custom
-          for i from 0 til plugins.length =>
-            if !plugins[i].test({node}) => continue
-            plugin = plugins[i]
-          if !plugin =>
-            data.plugin = "unknown"
-            return data
-          data.plugin = plugin.id
+          if !(plugin = find-plugin plugins, node.getAttribute(\dd-plugin)) =>
+            return data <<< {plugin: "unknown"}
+          data.plugin = "#{plugin.name}@#{plugin.version}"
 
-          ret = plugin.serialize({data, node, window})
+          ret = plugin.serialize({data, node, window, plugins})
           if ret instanceof Promise => queue.push ret
 
           return data
@@ -91,16 +95,12 @@ deserialize = (n, plugins, win = window) ->
           for c in (n.child or []) => if ret = _(c) => node.appendChild ret
           plugs = for c in (n.plug or []) => _(c)
 
-          for i from 0 til plugins.length =>
-            if !plugins[i].test({data: n}) => continue
-            plugin = plugins[i]
-            break
 
-          if !plugin =>
+          if !(plugin = find-plugin plugins, n.plugin) =>
             node.appendChild doc.createTextNode "(unknown)"
             return node
 
-          ret = plugin.deserialize {data: n, node, plugs, window: win}
+          ret = plugin.deserialize {data: n, node, plugs, window: win, plugins}
 
           if !ret => node.appendChild doc.createTextNode "(unknown)"
           else if ret instanceof Promise =>
@@ -117,7 +117,7 @@ deserialize = (n, plugins, win = window) ->
           else if ret instanceof win.Element => node = ret
           else {node,promise} = ret
           if promise => queue.push promise
-          node.setAttribute \dd-plugin, plugin.id
+          node.setAttribute \dd-plugin, "#{plugin.name}@#{plugin.version}"
           asc(n,node)
           return node
       _(n)
