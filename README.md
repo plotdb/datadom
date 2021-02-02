@@ -64,7 +64,12 @@ to run in nodeJS, use `jsdom` and pass `window` as an argument:
 
 similarly, pass `window` in constructor when using `new datadom( ... )`:
 
-    new datadom({ ..., window: (new JSDOM()).windiw)});
+    new datadom({ ..., window: (new JSDOM()).window)});
+
+
+## Plugins
+
+(TBD) check `doc/plugin.md` for more information.
 
 
 # License
