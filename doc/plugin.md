@@ -12,31 +12,34 @@ Plugins may involve actions such as querying a remote registry, thus Datadom exp
 
 ## Workflow
 
- - datadom worker
-   - detecting `custom` node type `D`.
-   - create a placeholder node `N`
-   - deserialize `D.child`, append them into `N`.
-   - deserialize `D.plug` to a list of node `PS`.
-     - `plug` serves the purpose similar to `slot` in HTML5's Custom Element.
-   - based on plugins' `test` method, find the first matched plugins, say `P`.
-   - deserialize `D` with `P.deserialize`, with following input:
-     - `N` - root of the priori-deserialized children.
-     - `D` - current data node
-     - `PS` - list of plugs
-     - a window object, for working in nodejs.
- - plugin deserializer
-   - return Element - synchronously return an element `N'` representing current data node.
-     - `N` then be replaced by `N'` in the DOM tree, if `N` != `N'`
-   - return Promise - asynchronously return an element `N'` representing current data node.
-     - `N` then be replaced by `N'` in the DOM tree, if `N` != `N'`
-     - `.. loading ..` shown in `N` before promise resolved.
-   - return Object - expect both an element and a promise is returned in object like `{node, promise}`.
-   - otherwise - error.
- - datadom worker 
-   - add attr `dd-plugin` to Node ( `N` & `N'` ) with value `plugin.id` 
-     - for identifying custom Node
-     - it depends on plugins how to keep additional data for, such as, `data` field or other information.
-     - this also means that plugin must return a node supporting `setAttribute` method.
+ - deserializing
+   - datadom worker
+     - detecting `custom` node type `D`.
+     ? create a placeholder node `N`
+     - deserialize `D.child`, append them into `N`.
+     - deserialize `D.plug` to a list of node `PS`.
+       - `plug` serves the purpose similar to `slot` in HTML5's Custom Element.
+     - find matched plugin `P` based on plugin's `name` / `version` and JSON's `plugin` field.
+     - deserialize `D` with `P.deserialize`, with following input:
+       - `N` - root of the priori-deserialized children.
+       - `D` - current data node
+       - `PS` - list of plugs
+   - plugin deserializer
+     - prepare DOM. If need, link it with a helper object for storing in-element data.
+       - it depends on plugin about how `N`, `PS` is handled, and how `D` is stored.
+     - return value:
+       - return Element - synchronously return an element `N'` representing current data node.
+         - `N` is then replaced by `N'` in DOM tree if `N` != `N'`
+       - return Promise - asynchronously return an element `N'` representing current data node.
+         - `N` then be replaced by `N'` in the DOM tree, if `N` != `N'`
+         - `.. loading ..` shown in `N` before promise resolved.
+       - return Object - expect both an element and a promise is returned in object like `{node, promise}`.
+       - otherwise - error.
+   - datadom worker 
+     - add attr `dd-plugin` to Node ( `N` & `N'` ) with value `plugin.name`@`plugin.version` 
+       - for identifying custom Node
+       - it depends on plugins how to keep additional data for, such as, `data` field or other information.
+       - this also means that plugin must return a node supporting `setAttribute` method.
 
 
 ## Specification
