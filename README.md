@@ -1,6 +1,6 @@
 # datadom
 
-dom serializer / deserializer
+DOM serializer / deserializer with scriptable plugins.
 
 
 # Usage
@@ -16,8 +16,8 @@ Add `datadom.js` in your HTML:
 
 serialize/deserialize a DOM tree:
 
-    json = datadom.serialize(document.querySelector("your-selector"))
-    datadom.deserialize(json,plugin)
+    json = datadom.serialize(document.querySelector("your-selector"), [])
+    datadom.deserialize(json,[])
       .then({node, promise}) ->
         node # node is the deserialized DOM tree root.
         promise # promise for asynchronous content
@@ -60,7 +60,7 @@ datadom class methods:
 
 to run in nodeJS, use `jsdom` and pass `window` as an argument:
 
-    datadom.deserialize({data, window: (new JSDOM()).window});
+    datadom.deserialize(data, [], (new JSDOM()).window);
 
 similarly, pass `window` in constructor when using `new datadom( ... )`:
 
