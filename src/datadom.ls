@@ -96,7 +96,6 @@ deserialize = (n, plugins, win = window) ->
           for c in (n.child or []) => if ret = _(c) => node.appendChild ret
           plugs = for c in (n.plug or []) => _(c)
 
-
           if !(plugin = find-plugin plugins, n.plugin) =>
             node.appendChild doc.createTextNode "(unknown)"
             return node
