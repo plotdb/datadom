@@ -1,17 +1,13 @@
 # Plugins
 
-this document defines how plugins work in datadom.
+When Datadom transforms between DOM and JSON, it can also (de)serialize more than a ordinary node - a custom node. Detail of the custom node is beyond Datadom's scope, but Datadom provides an interface for user-defined `plugins` to extend Datadom.
 
-## Purpose
-
-When datadom serializes DOM into data representation ( or vice versa ),  it's possible to also serialize/deserialize something powerful than just a simple DOM node. Defining such things is beyond datadom's purpose, so datadom provides an interface for user-defined *plugins* to extend datadom.
-
-Basically speaking, plugins does following:
- - recognize if a given data or DOM node is supported
- - (asynchronously) deserialize a recognized custom datadom node to DOM node
- - (asynchronously) serialize a recognized DOM node to custom datadom node
+Basically speaking, plugins do following:
+ - recognize if a given JSON/DOM node is supported, and once recognized:
+   - deserialize a custom JSON node to DOM node ( asynchronously )
+   - serialize a DOM node to JSON node ( asynchronously )
  
-It may involve actions like querying a remote registry thus datadom expects plugins to be asynchronous, as described below.
+Plugins may involve actions such as querying a remote registry, thus Datadom expects plugins to be asynchronous.
 
 
 ## Workflow
@@ -42,7 +38,10 @@ It may involve actions like querying a remote registry thus datadom expects plug
      - it depends on plugins how to keep additional data for, such as, `data` field or other information.
      - this also means that plugin must return a node supporting `setAttribute` method.
 
-## Spec
+
+## Specification
+
+A typical plugin contains following fields:
 
  - `name`: plugin name, follow npm package name convention.
  - `version`: plugin version, in `semver` format.
@@ -52,6 +51,19 @@ It may involve actions like querying a remote registry thus datadom expects plug
  - `deserialize({data, node, plugs, plugins, window})`: deserialize a give datadom node from data.
    - if there are any returned DOM constructed locally, it should help create custom object for any custom elements.
    - should help integrate DOM from child and plug.
- - `create(node)`: create an object for this node.
-   - don't have to define here? tentative
+
+
+## Wrapping Object
+
+When JSON is converting to DOM node, we may have additional data to store somewhere with the DOM node. Plugins should take care of this, and make sure the stored data will be correctly serialized when necessary.
+
+The suggested way is to link an intermediate object with DOM node by `WeakMap`:
+
+    wm = new WeakMap!
+    deserialize = ({node, data}) ->
+      obj = create-obj(data{data})
+      wm.set(node, obj)
+    serialize = ({node, data}) ->
+      obj = wm.get(node)
+      data.data <<< obj.serialize() 
 
