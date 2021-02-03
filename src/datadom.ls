@@ -1,13 +1,12 @@
 if module? and require? => require! <[@plotdb/json0]>
 
-find-plugin = (plugins = [], n) ->
+find-plugin = (plugins = [], n = '') ->
   n = n.split('@')
   [n,v] = if !n.0 => ["@#{n.1}", n.2] else [n.0,n.1]
   for i from 0 til plugins.length => if n == plugins[i].name => return plugins[i]
   return null
 
-obj-map = new WeakMap!
-
+# Attributes, Styles and Classes
 asc = (n,node) ->
   if Array.isArray(n.attr) => n.attr.filter(->it and it.0).map (p) -> node.setAttribute p.0, p.1
   if Array.isArray(n.style) => n.style.filter(->it and it.0).map (p) -> node.style[p.0] = p.1
@@ -124,6 +123,33 @@ deserialize = (n, plugins, win = window) ->
     .then (node) ->
       return {node, promise: Promise.all(queue)}
 
+
+/**
+ * inject custom object into custom node.
+ * @param {Element} node - DOM tree root node.
+ * @param {Plugin(s)} plugins - plugin or array of plugins
+ * @param {Window} win - window object. default `window`.
+ * @return {Promise} - resolving {data, promise} where data is a serialized JSON representing the input DOM, and promise resolves when serializing is done.
+
+ * @param {Window} win - window object. default `window`.
+ * @return {Promise} - resolving {data, promise} where data is a serialized JSON representing the input DOM, and promise resolves when serializing is done.
+ */
+possess = (node, plugins, win = window) ->
+  plugins = if Array.isArray(plugins) => plugins else if plugins => [plugins] else []
+  queue = []
+  Promise.resolve!
+    .then ->
+      _ = (n) ->
+        if !n.hasAttribute(\dd-plugin) =>
+          for i from 0 til n.childNodes.length => _ n.childNodes[i]
+          return
+        if !(plugin = find-plugin(plugins, node.getAttribute(\dd-plugin))) => return
+        ret = plugin.possess n, plugins
+        if ret instanceof Promise => queue.push ret
+      _(node)
+    .then -> Promise.all queue
+
+
 /**
  * apply op based on a data / root pair.
  * @param {json} op - operational transformation
@@ -189,7 +215,7 @@ main.prototype = Object.create(Object.prototype) <<< do
       json0.type.apply @data, [op]
       locate op, @data, @node
 
-main <<< { serialize, deserialize }
+main <<< { serialize, deserialize, possess }
 
 if module? => module.exports = main
 if window? => window.datadom = main

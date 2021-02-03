@@ -3,6 +3,8 @@
  - adding support to `comment` and `document-fragment`.
  - add plugin specification, and refactor code following plugin sepc.
  - make `serialize` asynchronous and process custom type correctly.
+ - add `possess` to inject `custom object` into `custom node`.
+ - tweak naming and update documentation.
 
 
 # 0.0.4
