@@ -6,7 +6,8 @@
   "cls": [],
   "child": [
     {
-      "type": "block",
+      "type": "custom",
+      "plugin": "@plotdb/block@0.0.1",
       "name": "long-answer",
       "child": [
 
@@ -29,7 +30,8 @@
 
     },
     {
-      "type": "block",
+      "type": "custom",
+      "plugin": "@plotdb/block@0.0.1",
       "name": "cta"
     },
     {
