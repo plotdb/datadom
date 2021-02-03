@@ -109,7 +109,7 @@ deserialize = (n, plugins, win = window) ->
               # what if node is not yet appended?
               # we may need to pend with Proxise until datadom parsing is done.
               if node != new-node => node.replaceWith new-node
-              new-node.setAttribute \dd-plugin, plugin.id
+              new-node.setAttribute \dd-plugin, "#{plugin.name}@#{plugin.version}"
               asc(n,new-node)
               return new-node
             )

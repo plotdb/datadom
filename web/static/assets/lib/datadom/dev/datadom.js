@@ -244,7 +244,7 @@
               if (node !== newNode) {
                 node.replaceWith(newNode);
               }
-              newNode.setAttribute('dd-plugin', plugin.id);
+              newNode.setAttribute('dd-plugin', plugin.name + "@" + plugin.version);
               asc(n, newNode);
               return newNode;
             });
