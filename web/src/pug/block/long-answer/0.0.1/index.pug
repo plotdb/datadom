@@ -25,12 +25,14 @@
         description: ""
         dependencies: [
           "https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"
+          "https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.6/purify.min.js"
         ]
       update: ->
       render: -> @view.render!
       init: ({root,mode,context}) ->
         mode = \edit
         @block = {}
+        dompurify = context.DOMPurify
         marked = context.marked
         @view = view = new ldView do
           root: root
@@ -58,7 +60,7 @@
             "markdown-enabled": ({node}) ~> node.classList.toggle \on, !!@block.{}config.markdown-enabled
             "preview-panel": ({node}) ~>
               node.classList.toggle \d-none, !@preview
-              if @preview => node.innerHTML = DOMPurify.sanitize(marked(@block.{}value.content or ''))
+              if @preview => node.innerHTML = dompurify.sanitize(marked(@block.{}value.content or ''))
             "edit-panel": ({node}) ~> node.classList.toggle \d-none, !!@preview
             "if-markdown": ({node}) ~> node.classList.toggle \d-none, !@block.{}value.use-markdown
             "if-markdown-enabled": ({node}) ~> node.classList.toggle \d-none, !@block.{}config.markdown-enabled

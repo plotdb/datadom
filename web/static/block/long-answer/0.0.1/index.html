@@ -5,17 +5,18 @@
     version: "0.0.1",
     license: "MIT",
     description: "",
-    dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js"]
+    dependencies: ["https://cdnjs.cloudflare.com/ajax/libs/marked/1.2.7/marked.min.js", "https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.2.6/purify.min.js"]
   },
   update: function(){},
   render: function(){
     return this.view.render();
   },
   init: function(arg$){
-    var root, mode, context, marked, view, this$ = this;
+    var root, mode, context, dompurify, marked, view, this$ = this;
     root = arg$.root, mode = arg$.mode, context = arg$.context;
     mode = 'edit';
     this.block = {};
+    dompurify = context.DOMPurify;
     marked = context.marked;
     return this.view = view = new ldView({
       root: root,
@@ -72,7 +73,7 @@
           node = arg$.node;
           node.classList.toggle('d-none', !this$.preview);
           if (this$.preview) {
-            return node.innerHTML = DOMPurify.sanitize(marked(((ref$ = this$.block).value || (ref$.value = {})).content || ''));
+            return node.innerHTML = dompurify.sanitize(marked(((ref$ = this$.block).value || (ref$.value = {})).content || ''));
           }
         },
         "edit-panel": function(arg$){
