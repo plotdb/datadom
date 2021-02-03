@@ -52,7 +52,7 @@
     "livescript": "^1.6.0",
     "mocha": "^8.2.1",
     "nyc": "^15.1.0",
-    "proxise": "0.0.1",
+    "proxise": "^0.1.1",
     "sharedb-wrapper": "^1.0.0",
     "template": "github:zbryikt/template#v2.2.0",
     "uglify-js": "=3.2.0"
