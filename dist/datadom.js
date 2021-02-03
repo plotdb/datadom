@@ -302,7 +302,11 @@
         if (!(plugin = findPlugin(plugins, node.getAttribute('dd-plugin')))) {
           return;
         }
-        ret = plugin.possess(n, plugins);
+        ret = plugin.possess({
+          node: node,
+          plugins: plugins,
+          window: window
+        });
         if (ret instanceof Promise) {
           return queue.push(ret);
         }

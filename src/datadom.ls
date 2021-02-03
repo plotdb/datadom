@@ -144,7 +144,7 @@ possess = (node, plugins, win = window) ->
           for i from 0 til n.childNodes.length => _ n.childNodes[i]
           return
         if !(plugin = find-plugin(plugins, node.getAttribute(\dd-plugin))) => return
-        ret = plugin.possess n, plugins
+        ret = plugin.possess {node, plugins, window}
         if ret instanceof Promise => queue.push ret
       _(node)
     .then -> Promise.all queue
