@@ -1,4 +1,4 @@
-var loadSample, manager;
+var loadSample, manager, wm;
 loadSample = function(arg$){
   var name;
   name = arg$.name;
@@ -22,16 +22,39 @@ manager = new block.manager({
     return "/block/" + name + "/" + version + "/index.html";
   }
 });
+wm = new WeakMap();
+block.from = function(node){
+  return wm.get(node);
+};
+block.set = function(node, obj){
+  return wm.set(node, obj);
+};
 block.plugin = {
   name: "@plotdb/block",
   version: "0.0.1",
-  possess: function(o){},
+  possess: function(o){
+    var obj;
+    obj = {
+      name: o.node.getAttribute('name'),
+      version: o.node.getAttribute('version')
+    };
+    return wm.set(o.node, obj);
+  },
   serialize: function(o){
-    var ref$;
-    ref$ = o.data;
-    ref$.name = o.node.block.name;
-    ref$.version = o.node.block.version;
-    return o.data.child = [];
+    var p;
+    p = !block.from(o.node)
+      ? datadom.possess(o.node, o.plugins)
+      : Promise.resolve();
+    return p.then(function(){
+      var obj, ref$;
+      if (!(obj = block.from(o.node))) {
+        return;
+      }
+      ref$ = o.data;
+      ref$.name = obj.name;
+      ref$.version = obj.version;
+      return o.data.child = [];
+    });
   },
   deserialize: function(o){
     return Promise.resolve().then(function(){

@@ -4,6 +4,7 @@ block body
   .d-flex.flex-column.h-100.h-100.p-2
     .d-flex.w-100
       .p-2: .btn.btn-outline-primary(ld="load-ce") Load CE Test
+      .p-2: .btn.btn-outline-primary(ld="load-block") Load Block Test
     .d-flex.w-100.h-50
 
       .w-100.h-100.p-2
@@ -32,6 +33,14 @@ block body
           .card-header.py-2.text-sm Remote ( Pug → DOM → JSON → ShareDB → JSON → DOM )
           .card-body.p-2(ld="remote")
 block script
+  //- @plotdb/block dependencies
+  +script("/assets/lib/proxise/main/proxise.js")
+  +script("/assets/lib/@plotdb/csscope/main/csscope.js")
+  +script("/assets/lib/@plotdb/rescope/main/rescope.js")
+  +script("/assets/lib/@plotdb/block/main/block.js")
+  +script("/js/block/data.js")
+  +script("/js/block/plugin.js")
+
   +script("js/editor/base.js")
   +script("js/editor/transpiler.js")
   +script("js/editor/editlet.js")

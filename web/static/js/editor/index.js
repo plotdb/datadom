@@ -1,7 +1,7 @@
 (function(it){
   return it();
 })(function(){
-  var lc, sdb, watch, pluginTestObj, pluginTest, plugins, view;
+  var lc, sdb, watch, pluginTestObj, pluginTest, plugins;
   lc = {};
   sdb = new sharedbWrapper();
   watch = function(ops, source){
@@ -62,7 +62,6 @@
       rootData = arg$.data, node = arg$.node, plugins = arg$.plugins, window = arg$.window;
       console.log("serialize ", node);
       obj = pluginTest.map.get(node);
-      console.log(obj);
       if (obj) {
         import$(rootData, obj.serialize());
       }
@@ -88,95 +87,104 @@
       return node;
     }
   };
-  plugins = [pluginTest];
-  view = new ldView({
-    root: document.body,
-    action: {
-      click: {
-        "load-ce": function(){
-          fs.writeFileSync('blank', "//- pug\ndiv(dd-plugin=\"plugin-test@0.0.1\") hi");
-          lc.ed.setFiles(fs);
-          lc.ed.open('blank');
-          return lc.ed.render();
+  plugins = [block.plugin, pluginTest];
+  return block.plugin.init().then(function(){
+    var view;
+    view = new ldView({
+      root: document.body,
+      action: {
+        click: {
+          "load-ce": function(){
+            fs.writeFileSync('blank', "//- pug\ndiv(dd-plugin=\"plugin-test@0.0.1\") hi");
+            lc.ed.setFiles(fs);
+            lc.ed.open('blank');
+            return lc.ed.render();
+          },
+          "load-block": function(){
+            fs.writeFileSync('blank', "//- pug\ndiv(dd-plugin=\"@plotdb/block@0.0.1\",name=\"long-answer\")");
+            lc.ed.setFiles(fs);
+            lc.ed.open('blank');
+            return lc.ed.render();
+          }
         }
       }
-    }
-  });
-  return sdb.get({
-    id: 'sample',
-    watch: watch,
-    create: function(){
-      return {};
-    }
-  }).then(function(doc){
-    lc.doc = doc;
-    lc.data = JSON.parse(JSON.stringify(doc.data));
-    return getfa('sample').then(function(fs){
-      var renderDatadom, ed;
-      lc.fs = fs;
-      fs.writeFileSync('blank', "//- pug\nh1 hello world!");
-      renderDatadom = function(code){
-        var div;
-        div = document.createElement("div");
-        div.innerHTML = code;
-        return datadom.serialize(div, plugins).then(function(arg$){
-          var data, promise;
-          data = arg$.data, promise = arg$.promise;
-          return promise.then(function(){
-            return data;
-          });
-        }).then(function(json){
-          var node, domroot, ops;
-          node = ld$.find('[ld=json]', 0);
-          node.innerText = JSON.stringify(json, null, 2);
-          domroot = ld$.find('[ld=dom]', 0);
-          datadom.deserialize(json, plugins).then(function(arg$){
-            var node, promise;
-            node = arg$.node, promise = arg$.promise;
-            domroot.innerHTML = "";
-            domroot.appendChild(node);
-            return promise.then(function(){
-              return datadom.serialize(node, plugins);
-            });
-          }).then(function(arg$){
+    });
+    return sdb.get({
+      id: 'sample',
+      watch: watch,
+      create: function(){
+        return {};
+      }
+    }).then(function(doc){
+      lc.doc = doc;
+      lc.data = JSON.parse(JSON.stringify(doc.data));
+      return getfa('sample').then(function(fs){
+        var renderDatadom, ed;
+        lc.fs = fs;
+        fs.writeFileSync('blank', "//- pug\nh1 hello world!");
+        renderDatadom = function(code){
+          var div;
+          div = document.createElement("div");
+          div.innerHTML = code;
+          return datadom.serialize(div, plugins).then(function(arg$){
             var data, promise;
             data = arg$.data, promise = arg$.promise;
             return promise.then(function(){
-              return console.log(data);
+              return data;
             });
+          }).then(function(json){
+            var node, domroot, ops;
+            node = ld$.find('[ld=json]', 0);
+            node.innerText = JSON.stringify(json, null, 2);
+            domroot = ld$.find('[ld=dom]', 0);
+            datadom.deserialize(json, plugins).then(function(arg$){
+              var node, promise;
+              node = arg$.node, promise = arg$.promise;
+              domroot.innerHTML = "";
+              domroot.appendChild(node);
+              return promise.then(function(){
+                return datadom.serialize(node, plugins);
+              });
+            }).then(function(arg$){
+              var data, promise;
+              data = arg$.data, promise = arg$.promise;
+              return promise.then(function(){
+                return console.log(data);
+              });
+            });
+            ops = json0.diff(doc.data, json);
+            return doc.submitOp(ops);
           });
-          ops = json0.diff(doc.data, json);
-          return doc.submitOp(ops);
-        });
-      };
-      lc.ed = ed = new Editor({
-        node: {
-          edit: '[ld=editor]',
-          view: '[ld=viewer]'
-        },
-        editlet: {},
-        renderer: function(arg$){
-          var fs, payload, k, v, ret;
-          fs = arg$.fs;
-          if (!fs) {
-            return;
-          }
-          payload = {
-            html: fs.readFileSync('blank').toString()
-          };
-          for (k in payload) {
-            v = payload[k];
-            ret = transpiler.detect(v);
-            if (ret.mod && ret.mod.transform) {
-              payload[k] = ret.mod.transform(v);
+        };
+        lc.ed = ed = new Editor({
+          node: {
+            edit: '[ld=editor]',
+            view: '[ld=viewer]'
+          },
+          editlet: {},
+          renderer: function(arg$){
+            var fs, payload, k, v, ret;
+            fs = arg$.fs;
+            if (!fs) {
+              return;
             }
-            renderDatadom(payload.html);
+            payload = {
+              html: fs.readFileSync('blank').toString()
+            };
+            for (k in payload) {
+              v = payload[k];
+              ret = transpiler.detect(v);
+              if (ret.mod && ret.mod.transform) {
+                payload[k] = ret.mod.transform(v);
+              }
+              renderDatadom(payload.html);
+            }
+            return payload;
           }
-          return payload;
-        }
+        });
+        ed.setFiles(fs);
+        return ed.open('blank');
       });
-      ed.setFiles(fs);
-      return ed.open('blank');
     });
   });
 });

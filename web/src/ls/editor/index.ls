@@ -19,13 +19,12 @@ plugin-test-obj = (opt = {}) ->
 
 plugin-test-obj.prototype = Object.create(Object.prototype) <<< do
   serialize: -> return @data{data,dev}
-  
 
 window.pt = plugin-test = do
   name: "plugin-test",
   version: "0.0.1",
   map: do
-    set: (node, obj) -> 
+    set: (node, obj) ->
       console.log node
       if !plugin-test.map.wm => plugin-test.map.wm = new WeakMap!
       plugin-test.map.wm.set node, obj
@@ -38,10 +37,9 @@ window.pt = plugin-test = do
   serialize: ({data: root-data, node, plugins, window}) ->
     console.log "serialize ", node
     obj = plugin-test.map.get node
-    console.log obj
     if obj => root-data <<< obj.serialize!
     Promise.all(Array.from(node.childNodes).map (n,i) -> datadom.serialize n, plugins )
-      .then (list) -> 
+      .then (list) ->
         root-data.child ++= list.map(->it.data)
         Promise.all list.map(->it.promise)
   # DOM from node. No plugs mechanism.
@@ -51,15 +49,25 @@ window.pt = plugin-test = do
     console.log "reget",plugin-test.map.get node
     return node
 
-plugins = [plugin-test]
+plugins = [block.plugin, plugin-test]
+
+<- block.plugin.init!then _
 
 view = new ldView do
   root: document.body
   action: click:
-    "load-ce": -> 
+    "load-ce": ->
       fs.write-file-sync \blank, """
       //- pug
       div(dd-plugin="plugin-test@0.0.1") hi
+      """
+      lc.ed.set-files fs
+      lc.ed.open \blank
+      lc.ed.render!
+    "load-block": ->
+      fs.write-file-sync \blank, """
+      //- pug
+      div(dd-plugin="@plotdb/block@0.0.1",name="long-answer")
       """
       lc.ed.set-files fs
       lc.ed.open \blank
