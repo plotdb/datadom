@@ -25,7 +25,8 @@ block script
         .catch -> console.log "failed to load block #name", it
 
     plugin = do
-      id: "@plotdb/block@0.0.1"
+      name: "@plotdb/block"
+      version: "0.0.1"
       test: -> true
       serialize: (o) ->
         o.data <<< {name: o.node.block.name, version: o.node.block.version}
@@ -46,7 +47,7 @@ block script
     manager.init!
       .then -> ld$.fetch '/assets/data/data.json', {method: \GET}, {type: \json}
       .then (data) ->
-        dd = new datadom {data, plugin}
+        dd = new datadom {data, plugins: [plugin]}
         dd.init!
           .then ({node, promise}) ->
             root.appendChild node

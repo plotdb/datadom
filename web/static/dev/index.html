@@ -22,7 +22,8 @@ loadSample = function(arg$){
   });
 };
 plugin = {
-  id: "@plotdb/block@0.0.1",
+  name: "@plotdb/block",
+  version: "0.0.1",
   test: function(){
     return true;
   },
@@ -72,7 +73,7 @@ manager.init().then(function(){
   var dd;
   dd = new datadom({
     data: data,
-    plugin: plugin
+    plugins: [plugin]
   });
   return dd.init().then(function(arg$){
     var node, promise;
