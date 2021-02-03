@@ -2,6 +2,8 @@
 
 DOM serializer / deserializer with scriptable plugins.
 
+WIP, please consider this as an unstable library.
+
 
 # Usage
 
