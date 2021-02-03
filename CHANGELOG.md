@@ -1,4 +1,4 @@
-# 0.1.0 (upcoming)
+# 0.1.0
 
  - adding support to `comment` and `document-fragment`.
  - add plugin specification, and refactor code following plugin sepc.
