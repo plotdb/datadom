@@ -95,8 +95,9 @@ When a custom data is found ( a data node `D` with type `custom` ):
 When a DOM with `custom node` is given directly, it may not yet initialized by plugins. We will need to initialize them ( not deserialize ). This can be done by:
 
     datadom.possess = (node) ->
-      for n in node.childNodes => if !is-custom-node(n) => datadom.possess n 
-      if !is-custom-node(node) => return
+      if !is-custom-node(node) =>
+        for n in node.childNodes => if !is-custom-node(n) => datadom.possess n
+        return
       if !(plugin = find-plugin-for(node,plugins)) => return
       # plugin can recursively init its subtree with `datadom.possess`
       plugin.possess(node, plugins)
