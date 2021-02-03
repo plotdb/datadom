@@ -1,0 +1,21 @@
+extends /base.pug
+block prehead
+  base(href="../")
+block body
+  .row.w-1200.rwd.mx-auto.my-4
+    .col-md
+      .text-center load from fected json
+      hr
+      #root.w-100.mx-auto.my-2.bg-light.p-4.border.shadow
+    .col-md
+      .text-center deserialize from serialized dom
+      hr
+      #rootalt.w-100.mx-auto.my-2.bg-light.p-4.border.shadow
+block script
+  +script("/assets/lib/proxise/main/proxise.js")
+  +script("/assets/lib/@plotdb/csscope/main/csscope.js")
+  +script("/assets/lib/@plotdb/rescope/main/rescope.js")
+  +script("/assets/lib/@plotdb/block/main/block.js")
+  +script("/js/block/data.js")
+  +script("/js/block/plugin.js")
+  +script("/js/block/index.js")
