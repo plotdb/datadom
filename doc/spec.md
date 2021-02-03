@@ -1,15 +1,18 @@
-# datadom spec
+# Datadom Specification
 
-`datadom` is a JSON / DOM pair that can be converted from one to each other.
+`Datadom` is a JSON / DOM pair that can be converted from one to each other.
+
+
+## Definition
 
 For basic DOM elements, this is trivial. Yet we added the concept of `custom element` and thus additional care must be taken to implement it.
 
 While it's possible to simply let web component to handle custom element concept, it brings some limitation about DOM hierarchy and global CSS. Thus datadom defines its own spec about custom element, and handle it manually.
 
 
-## data part 
+### Data Part 
 
-JSON object which can be converted to / from a DOM tree. Following is the member of each node in json:
+Data part of Datadom is a JSON object which can be converted to / from a DOM tree. Following are all fields of it:
 
  - `type` - node type. such as `tag`, `custom`, `text`
     - `tag` - markup language tags
@@ -37,82 +40,72 @@ JSON object which can be converted to / from a DOM tree. Following is the member
  - `id` - unique representation of this node with suuid.
  - `link` - connection to other node. a list of node `id`.
 
-----
-下面還在想
-----
 
-## dom part
+### DOM part
 
-DOM part of `datadom` simply follows the W3C DOM Spec - however we still have to handle `custom element` part.
+DOM part of `datadom` simply follows the W3C DOM Spec - except the `custom element` part.
 
-Custom elements are defined as:
+For distinguishing, we name this `custom element` concept as `custom node`, in case of confusion. And its counter part - the converted data - is called `custom data`.
 
- - element name: either a `div`, or a custom element named `custom-datadom`
- - attribute:
-   `dd-plugin`: with value from plugin `name@version` pair ( plugin id ). inherited from closest parent, if omitted
+A custom node is defined as an plain DOM element with:
 
-There may be more attributes depending on the plugin. For example, `@plotdb/block` may use following attribute:
- - `name`: block name
- - `version`: block version
+ - element name: either a `div`, or a custom element with not-yet-specified name, may be defined in the future.
+ - attribute: `dd-plugin`: with value from plugin `name@version` pair.
 
-And some additional requirement:
-
- - `datadom.get-object(element)` always return corresponding object for element.
-   - if it's not yet inited or there is no such object existed, datadom is responsible for creating an empty one.
-   - 可能需要 init state 傳入. 該怎麼處理? 還是說, 只要是靠 datadom 建立的, 就全都預設空?
- - `datadom.get-plugin-name(element)` return plugin id
+Depending on plugin itself, there may be additional requirements, such as:
+ - `@plotdb/block` may need additional attributes, such as:
+   - `name`: block name
+   - `version`: block version
+ - A custom node DOM will have to somehow keep its data object, named `custom object` ( discussed below ). This is beyond scope of this spec, and left for plugins to implement.
 
 
+## Conversion
 
-## Convert from custom DOM to custom data
+After data and node are defined, we still have to know how to convert between them. There are 3 types of conversion:
 
-This only happens when parser finds an element `N` with `dd-plugin` attribute.
-
-    plugin = datadom.get-plugin(N)
-    obj = datadom.get-object(N)
-    data = {type: 'custom', plugin: datadom.get-plugin-name(N)} <<< obj{name, version}
-    data <<< get-basic-attributes(N){attr, style, class}
-    # plugin should setup `data`, `child` and `plugs` fields
-    plugin.serialize({data: data, node: N})
-      .then -> data
-
-## Convert from custom data tom custom DOM
-
-When a data node `D` with `custom` name found, it should be converted to custom DOM as below:
-
-    plugin = datadom.get-plugin(D)
-    dom = deserialize(D.child)
-    plugs = D.[]plugins.map -> deserialize it
-    node = datadom.create-pleaceholder() # 是否有可能不要抽換?
-    node.appendChild(dom)
-    # plugin should prepare obj and subtree based on `data`, `child` and `plugs` fields.
-    plugin.deserialize({data: D, node: node})
-      .then ({node, obj}) ->
-        datadom.set-object(node, obj)
-        node
+ - Node to Data
+ - Data to Node
+ - Node to Node ( uninitialized to initialized one )
 
 
-## Custom Object - Custom DOM Manipulaion Object
+### custom node → custom data
 
-All custom DOM have an internal object - called `Custom Object` - created using `plugin.create(node)`(should not be defined here?). datadom always ensure an object returned when `get-object` is called:
+When a custom node is found ( an element `N` with `dd-plugin` attribute ):
 
-    datadom.get-object = (n,p) ->
-      if datadom.wm.get(n) => return that
-      p = datadom.get-plugin(n,p)
-      datadom.wm.set n, (obj = p.create(n))
-      return n
-      
-However creation of this object may involve the initialization of DOM, so it should always be called once a custom DOM node is available in DOM:
+    if !(plugin = find-plugin-for(N)) => return
+    data = {type: "custom", plugin: makeName(plugin)}
+    # plugin fills `data`, `child` and `plugs` and other fields if necessary.
+    # it may recursively call `datadom.serialize` for doing this job.
+    plugin.serialize({data, node: N, plugins})
 
-    # when deserializing is done:
-    datadom.prepare-object = (root,p) ->
-      Array.from(root.querySelectorAll('*[dd-plugin]')).map (n) -> datadom.get-object(n,p)
 
-    # within plugin.deserialize:
-    plugin.deserialize = (obj,p) ->
-      # this should return the corresponding node. They are 
-      some-internal-work(obj)
-        .then (node) ->
-          datadom.prepare-object(node,p)
+## Convert from custom data tom custom node
 
-As shown above, plugin may create DOM elements directly ( in some-interal-work ) without datadom's help. In this case, `custom object` for custom elements in the returned DOM may not yet be created. Plugin is responsible for initializing these object by calling `datadom.prepare-object` ( or something like that, TBD. )
+When a custom data is found ( a data node `D` with type `custom` ):
+
+    if !(plugin = find-plugin-for(D,plugins)) => return
+    node = domtree-from(D.child)
+    plugs = D.plugs.map (it) -> domtree-from(it)
+    # plugin prepare internal object with `data`, and DOM with `child` and `plugs` fields.
+    plugin.deserialize({node, plugs, data: D, pluings})
+
+
+## wild node → custom node
+
+When a DOM with `custom node` is given directly, it may not yet initialized by plugins. We will need to initialize them ( not deserialize ). This can be done by:
+
+    datadom.possess = (node) ->
+      for n in node.childNodes => if !is-custom-node(n) => datadom.possess n 
+      if !is-custom-node(node) => return
+      if !(plugin = find-plugin-for(node,plugins)) => return
+      # plugin can recursively init its subtree with `datadom.possess`
+      plugin.possess(node, plugins)
+  
+
+## custom object - data for custom node
+
+All custom nodes keep their internal state / data in an object - called `custom object`. The underlying mechanism is defined and managed by plugins.
+
+Generally speaking, a `custom object` should be created once a corresponding `custom node` is available, usually in the process of deserialization.
+
+If, instead of construct DOM tree from `deserialize`, somehow plugin prepare DOM tree directly ( for example, from HTML code ), plugins are responsible to call `datadom.possess` for initializing `custom object` for all `custom node` in the sub DOM tree.
