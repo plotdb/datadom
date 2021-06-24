@@ -32,6 +32,7 @@
   "devDependencies": {
     "@loadingio/debounce.js": "0.0.1",
     "@loadingio/ldquery": "^2.0.0",
+    "@plotdb/block": "^1.4.8",
     "@plotdb/csscope": "^0.4.0",
     "@plotdb/datahub": "0.0.6",
     "@plotdb/json0": "0.0.2",

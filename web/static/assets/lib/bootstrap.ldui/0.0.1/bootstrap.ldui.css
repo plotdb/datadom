@@ -46,7 +46,7 @@
   z-index: 1001;
 }
 .hover-tip.ghost,
-.cutom-tip.ghost {
+.custom-tip.ghost {
   pointer-events: none;
 }
 .hover-tip {
@@ -407,6 +407,9 @@
 }
 .clickable {
   cursor: pointer !important;
+}
+.unclickable {
+  cursor: not-allowed !important;
 }
 .underdash {
   border-bottom: 1px dashed currentColor;
