@@ -2,7 +2,8 @@
 doctype html
 html
   block vars
-  include /../../static/assets/lib/bootstrap.ldui/main/index.pug
+    include @/bootstrap.ldui/dist/index.pug
+    include @/ldview/dist/index.pug
   head
     block prehead
     +css("assets/lib/bootstrap/main/css/bootstrap.min.css")
@@ -24,6 +25,6 @@ html
     +script("assets/lib/@loadingio/ldquery/main/ldq.min.js")
     +script("assets/lib/@loadingio/debounce.js/main/debounce.min.js")
     +script("assets/lib/ldcover/main/ldcv.min.js")
-    +script("assets/lib/ldview/main/ldview.min.js")
+    +script("assets/lib/ldview/main/index.min.js")
     +script("assets/lib/datadom/dev/datadom.min.js")
     block script

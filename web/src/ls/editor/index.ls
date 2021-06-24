@@ -53,7 +53,7 @@ plugins = [block.plugin, plugin-test]
 
 <- block.plugin.init!then _
 
-view = new ldView do
+view = new ldview do
   root: document.body
   action: click:
     "load-ce": ->

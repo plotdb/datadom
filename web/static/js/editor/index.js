@@ -90,7 +90,7 @@
   plugins = [block.plugin, pluginTest];
   return block.plugin.init().then(function(){
     var view;
-    view = new ldView({
+    view = new ldview({
       root: document.body,
       action: {
         click: {

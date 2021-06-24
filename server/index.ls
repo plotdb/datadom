@@ -1,5 +1,6 @@
 t1 = Date.now!
-require! <[fs path yargs template sharedb-wrapper express]>
+require! <[fs path yargs template @plotdb/srcbuild sharedb-wrapper express]>
+view = require "@plotdb/srcbuild/dist/view/pug"
 
 root = path.join(path.dirname(fs.realpathSync __filename.replace(/\(js\)$/,'')), '..')
 
@@ -17,7 +18,7 @@ server = do
     @app = app = express!
     cwd = process.cwd!
     {server,sdb,connect,wss} = sharedb-wrapper {app, io: config.pg}
-    app.engine 'pug', template.view
+    app.engine 'pug', view
     app.set 'view engine', 'pug'
     app.set 'views', path.join(cwd, './src/pug/')
     app.locals.viewdir = path.join(cwd, './.view/')
@@ -28,10 +29,11 @@ server = do
     server.listen opt.port, ->
       delta = if opt.start-time => "( takes #{Date.now! - opt.start-time}ms )" else ''
       console.log "[SERVER] listening on port #{server.address!port} #delta".cyan
+    srcbuild.lsp {base: '.'}
+
 
 opt = {start-time: t1, port: 5200}
 
 process.chdir path.join(root, 'web')
 
 server.init opt
-template.watch.init opt
