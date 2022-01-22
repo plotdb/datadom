@@ -4,6 +4,8 @@
   "license": "MIT",
   "description": "dom serializer / deserializer",
   "version": "0.1.1",
+  "browser": "dist/index.min.js",
+  "main": "dist/index.min.js",
   "files": [
     "dist/**/*"
   ],
