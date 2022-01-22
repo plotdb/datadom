@@ -24,12 +24,12 @@
 
 +script("https://cdnjs.cloudflare.com/ajax/libs/BrowserFS/2.0.0/browserfs.min.js")
 //- init before loading pug to make it work.
-script: :lsc
+script(type="module"): :lsc
   BrowserFS.install window
   BrowserFS.configure {fs: \LocalStorage}, -> window.fs = fs = require("fs")
 
-+script("assets/lib/@plotdb/pug-browser/main/pug.min.js")
-+script("assets/lib/@plotdb/pug-browser/main/html2pug.min.js")
++script("assets/lib/@plotdb/pug-browser/main/dist/pug.min.js")
++script("assets/lib/@plotdb/pug-browser/main/dist/html2pug.min.js")
 
 //- renderer
-+script("/assets/lib/@plotdb/sandbox.js/main/sandbox.min.js")
++script("/assets/lib/@plotdb/sandbox.js/main/dist/sandbox.min.js")

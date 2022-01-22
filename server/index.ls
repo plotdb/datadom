@@ -1,5 +1,5 @@
 t1 = Date.now!
-require! <[fs path yargs template @plotdb/srcbuild sharedb-wrapper express]>
+require! <[fs path yargs @zbryikt/template @plotdb/srcbuild sharedb-wrapper express]>
 view = require "@plotdb/srcbuild/dist/view/pug"
 
 root = path.join(path.dirname(fs.realpathSync __filename.replace(/\(js\)$/,'')), '..')
