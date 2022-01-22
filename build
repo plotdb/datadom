@@ -4,15 +4,10 @@ echo "prepare..."
 rm -rf dist
 mkdir -p dist
 
-echo "building datadom.ls -> datadom.js ..."
-npx lsc -cp src/datadom.ls > dist/datadom.js
-echo "minify datadom.js -> datadom.min.js ..."
-npx uglifyjs dist/datadom.js > dist/datadom.min.js
-
-echo "building datadom.ls -> datadom.js ..."
-npx lsc -cp src/datadom.ls > dist/datadom.js
-echo "minify datadom.js -> datadom.min.js ..."
-npx uglifyjs dist/datadom.js > dist/datadom.min.js
+echo "building index.ls -> index.js ..."
+./node_modules/.bin/lsc -cp --no-header src/index.ls > dist/index.js
+echo "minify index.js -> index.min.js ..."
+./node_modules/.bin/uglifyjs dist/index.js -m -c > dist/index.min.js
 
 echo "copy dist to web ..."
 rm -rf web/static/assets/lib/datadom/dev/

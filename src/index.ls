@@ -189,7 +189,7 @@ locate = (op, data, root) ->
         .then ({node, promise}) ->
           obj.insertBefore node, obj.childNodes[op.p[i + 1]]
 
-main = (opt = {}) ->
+datadom = (opt = {}) ->
   @opt = opt
   @window = if opt.window => that else if window? => window else null
   @plugins = if Array.isArray(opt.plugins) => opt.plugins else if opt.plugins => [opt.plugins] else []
@@ -197,7 +197,7 @@ main = (opt = {}) ->
   else if opt.node => @node = opt.node
   @
 
-main.prototype = Object.create(Object.prototype) <<< do
+datadom.prototype = Object.create(Object.prototype) <<< do
   init: ->
     if @data =>
       deserialize(@data, @plugins, @window)
@@ -215,7 +215,7 @@ main.prototype = Object.create(Object.prototype) <<< do
       json0.type.apply @data, [op]
       locate op, @data, @node
 
-main <<< { serialize, deserialize, possess }
+datadom <<< { serialize, deserialize, possess }
 
-if module? => module.exports = main
-if window? => window.datadom = main
+if module? => module.exports = datadom
+else if window? => window.datadom = datadom
