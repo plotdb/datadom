@@ -1,8 +1,16 @@
 # Change Logs
 
-## v0.1.2 (upcoming)
+## v0.2.0
 
  - upgrade modules
+ - rename internal variables `main` to `datadom`
+ - rename `datadom.js`, `datadom.min.js` to `index.js` and `index.min.js`
+ - further minimize generated js file with mangling and compression
+ - remove redundant code in build script
+ - use script directly instead of `npx` to speed up building
+ - add `main` and `browser` field in `package.json`.
+ - patch test code to make it work with upgraded modules
+ - release with compact directory structure
 
 
 ## v0.1.1
