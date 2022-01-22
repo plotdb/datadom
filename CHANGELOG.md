@@ -1,5 +1,10 @@
 # Change Logs
 
+## v0.2.1 (upcoming)
+
+ - update `@plotdb/sandbox`
+
+
 ## v0.2.0
 
  - upgrade modules
