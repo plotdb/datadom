@@ -1,18 +1,1 @@
-<h5>hello world!</h5><p>this is a sample block.</p><style>h5 {
-  background: #f00;
-}
-</style><script>({
-  init: function(opt){
-    var div, this$ = this;
-    opt == null && (opt = {});
-    this.root = opt.root;
-    div = document.createElement("div");
-    this.root.appendChild(div);
-    console.log('init!');
-    this.c = 0;
-    return setInterval(function(){
-      div.innerText = this$.c;
-      return this$.c++;
-    }, 1000);
-  }
-});</script>
+<h5>hello world!</h5><p>this is a sample block.</p><style>h5{background:red}</style><script>({init:function(t){var n,e=this;t==null&&(t={});this.root=t.root;n=document.createElement("div");this.root.appendChild(n);console.log("init!");this.c=0;return setInterval(function(){n.innerText=e.c;return e.c++},1e3)}});</script>
