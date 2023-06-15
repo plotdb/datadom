@@ -1,6 +1,6 @@
 <-(->it!) _
 lc = {}
-sdb = new sharedb-wrapper!
+sdb = new sharedb-wrapper url: {}
 watch = (ops, source) ->
   json0.type.apply lc.data, ops
   remote = ld$.find '[ld=remote]', 0

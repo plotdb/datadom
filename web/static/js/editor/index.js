@@ -3,7 +3,9 @@
 })(function(){
   var lc, sdb, watch, pluginTestObj, pluginTest, plugins;
   lc = {};
-  sdb = new sharedbWrapper();
+  sdb = new sharedbWrapper({
+    url: {}
+  });
   watch = function(ops, source){
     var remote;
     json0.type.apply(lc.data, ops);
