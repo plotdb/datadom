@@ -3,6 +3,7 @@
 ## v0.2.1 (upcoming)
 
  - update `@plotdb/sandbox`
+ - upgrade dependencies
 
 
 ## v0.2.0
